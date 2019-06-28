@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="anchor" prefHeight="650.0" prefWidth="1790.0" stylesheets="@../../css/gust.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="org.db.Exceptions">
+    <children>
+        <Button fx:id="buttonExceptionQuit" layoutX="1672.0" layoutY="10.0" mnemonicParsing="false" onAction="#ButtonExceptionQuitOnAction" styleClass="button-fill" stylesheets="@../../css/gust.css" text="Quit" />
+        <TableView fx:id="tableViewExceptions" layoutX="39.0" layoutY="50.0" prefHeight="550.0" prefWidth="1679.0" styleClass="text-fill" stylesheets="@../../css/gust.css">
+            <columns>
+                <TableColumn fx:id="columnNumber" maxWidth="150.0" text="Number" />
+                <TableColumn fx:id="columnName" prefWidth="200.0" text=" Exception Name" />
+                <TableColumn fx:id="columnStatus" prefWidth="128.0" text="Status" />
+                <TableColumn fx:id="columnTask" maxWidth="133.0" prefWidth="123.0" text="Task" />
+                <TableColumn fx:id="columnECO_MCO" prefWidth="113.0" text="ECO/MCO" />
+                <TableColumn fx:id="columnApprovals" prefWidth="209.0" text="Awaiting Approvals" />
+                <TableColumn fx:id="columnCodes" prefWidth="258.0" text="Codes" />
+                <TableColumn fx:id="columnOpp" prefWidth="296.0" text="Opportunity" />
+                <TableColumn fx:id="columnAgileId" maxWidth="389.0" minWidth="0.0" prefWidth="127.0" text="AgileId" />
+                <TableColumn fx:id="columnDate" maxWidth="380.0" prefWidth="144.0" text=" Due Date" />
+            </columns>
+        </TableView>
+        <Label fx:id="labelStatus_Message" layoutX="39.0" layoutY="614.0" prefHeight="22.0" prefWidth="541.0" styleClass="label-caption" stylesheets="@../../css/gust.css" />
+    </children>
+
+</AnchorPane>
