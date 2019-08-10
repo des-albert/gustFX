@@ -84,11 +84,13 @@ public class firstArticle {
     GetObjectResponseType getObjectResponseType = agileBusinessObjectStub.getObject(getObjectRequestType);
     if (getObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
       label_FA_Status.setText("Get Object " + customCode.itemText + " SUCCESS");
-      label_FA_Status.getStyleClass().add("label-success");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-success");
     } else {
       label_FA_Status.setText("Get Object " + customCode.itemText + " FAILURE - " +
           getObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-      label_FA_Status.getStyleClass().add("label-failure");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-failure");
       return;
 
     }
@@ -173,12 +175,14 @@ public class firstArticle {
         AgileCreateObjectResponse createObjectResponse = createObjectResponseType.getResponses().get(0);
         agileMCO.objectNumber = createObjectResponse.getAgileObject().getObjectIdentifier().getObjectId().toString();
         label_FA_Status.setText("MCO " + agileMCO.itemText + " Create SUCCESS");
-        label_FA_Status.getStyleClass().add("label-success");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-success");
         return true;
       } else {
         label_FA_Status.setText("MCO Create FAILURE - "
             + createObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-        label_FA_Status.getStyleClass().add("label-failure");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-failure");
         return false;
       }
 
@@ -215,21 +219,56 @@ public class firstArticle {
       AddRowsResponseType addRowsResponseType = agileTableStub.addRows(addRowsRequestType);
       if (addRowsResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
         label_FA_Status.setText("MCO Add Affected Item " + code.itemText + " SUCCESS");
-        label_FA_Status.getStyleClass().add("label-success");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-success");
 
       }
       else if (addRowsResponseType.getStatusCode().equals(ResponseStatusCode.WARNING)) {
         label_FA_Status.setText("MCO Add Affected Item WARNING - " + code.itemText + " " +
             addRowsResponseType.getWarnings().get(0).getWarning().get(0).getMessage());
-        label_FA_Status.getStyleClass().add("label-warning");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-warning");
       }
 
       else {
         label_FA_Status.setText("MCO Add Affected Item FAILURE - " + code.itemText + " " +
             addRowsResponseType.getExceptions().get(0).getException().get(0).getMessage());
-        label_FA_Status.getStyleClass().add("label-failure");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-failure");
         agileMCO.itemText = null;
         return false;
+      }
+
+      /* Set Custom Code Type */
+
+      if (checkBox_SalesException.isSelected()) {
+        UpdateObjectRequestType updateObjectRequestType = new UpdateObjectRequestType();
+        AgileUpdateObjectRequest agileUpdateObjectRequest = new AgileUpdateObjectRequest();
+        agileUpdateObjectRequest.setClassIdentifier("CustomCode");
+        agileUpdateObjectRequest.setObjectNumber(code.objectNumber);
+
+        Element el_code_type = createListElement("list43", "Sales Led",
+                ItemConstants.ATT_PAGE_THREE_LIST13.toString());
+
+        row = new AgileRowType();
+        row.getAny().add(el_code_type);
+        agileUpdateObjectRequest.setData(row);
+
+        updateObjectRequestType.getRequests().add(agileUpdateObjectRequest);
+        UpdateObjectResponseType  updateObjectResponseType = agileBusinessObjectStub.updateObject(updateObjectRequestType);
+
+        if (updateObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
+          label_FA_Status.setText("Custom Code Update SUCCESS");
+          label_FA_Status.getStyleClass().remove(0);
+          label_FA_Status.getStyleClass().add(0,"label-success");
+
+        }
+        else  {
+          label_FA_Status.setText("Custom Code Update FAILURE - "
+                  + updateObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
+          label_FA_Status.getStyleClass().remove(0);
+          label_FA_Status.getStyleClass().add(0,"label-failure");
+        }
       }
 
       /* Set LifeCycle Phase */
@@ -254,13 +293,15 @@ public class firstArticle {
       UpdateRowsResponseType updateRowsResponseType = agileTableStub.updateRows(updateRowsRequestType);
       if (updateRowsResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
         label_FA_Status.setText("Change Lifecycle" + code.itemText + " to FA SUCCESS");
-        label_FA_Status.getStyleClass().add("label-success");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0,"label-success");
 
       }
       else {
         label_FA_Status.setText("Add Affected Item FAILURE - " + code.itemText + " " +
             updateRowsResponseType.getExceptions().get(0).getException().get(0).getMessage());
-        label_FA_Status.getStyleClass().add("label-failure");
+        label_FA_Status.getStyleClass().remove(0);
+        label_FA_Status.getStyleClass().add(0, "label-failure");
         agileMCO.itemText = null;
         return false;
       }
@@ -283,12 +324,14 @@ public class firstArticle {
     SetWorkFlowResponseType setWorkflowResponseType = agileCollaborationStub.setWorkFlow(setWorkFlowRequestType);
     if (setWorkflowResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
       label_FA_Status.setText("MCO " + agileMCO.itemText + " Workflow  SUCCESS");
-      label_FA_Status.getStyleClass().add("label-success");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-success");
     }
     else{
       label_FA_Status.setText("MCO " + agileMCO.itemText + " Workflow  FAILURE - " +
           setWorkflowResponseType.getExceptions().get(0).getException().get(0).getMessage());
-      label_FA_Status.getStyleClass().add("label-failure");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-failure");
       agileMCO.itemText = null;
     }
 
@@ -308,12 +351,14 @@ public class firstArticle {
     ChangeStatusResponseType changeStatusResponseType = agileCollaborationStub.changeStatus(changeStatusRequestType);
     if (changeStatusResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
       label_FA_Status.setText("MCO " + agileMCO.itemText + " Submit  SUCCESS");
-      label_FA_Status.getStyleClass().add("label-success");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-success");
     }
     else {
       label_FA_Status.setText("MCO " + agileMCO.itemText + " Submit FAILURE - " +
           setWorkflowResponseType.getExceptions().get(0).getException().get(0).getMessage());
-      label_FA_Status.getStyleClass().add("label-failure");
+      label_FA_Status.getStyleClass().remove(0);
+      label_FA_Status.getStyleClass().add(0, "label-failure");
       agileMCO.itemText = null;
     }
   }

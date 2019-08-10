@@ -1,6 +1,7 @@
 package org.db;
 
 import com.agile.api.ChangeConstants;
+import com.agile.api.ItemConstants;
 import com.agile.ws.schema.business.v1.jaxws.*;
 import com.agile.ws.schema.collaboration.v1.jaxws.*;
 import com.agile.ws.schema.common.v1.jaxws.*;
@@ -55,7 +56,7 @@ public class Shared {
                     code = e.getTextContent();
                 }
             }
-            if (code.equals(keyword)) {
+            if (code != null && code.equals(keyword)) {
                 status.setText("Code " + " - " + keyword + " Search  SUCCESS");
                 status.getStyleClass().add("label-success");
                 return quickSearchResponseType.getTable().getRow().get(0).getObjectReferentId().getObjectId().toString();
@@ -86,7 +87,7 @@ public class Shared {
                         changeNumber = e.getTextContent();
                     }
                 }
-                if (changeNumber.equals(keyword)) {
+                if (changeNumber != null && changeNumber.equals(keyword)) {
                     status.setText("Change " + " - " + keyword + " Search  SUCCESS");
                     status.getStyleClass().add("label-success");
                     return r.getObjectReferentId().getObjectId().toString();
@@ -121,7 +122,7 @@ public class Shared {
             AgileGetObjectResponse response = getObjectResponseType.getResponses().get(0);
             AgileObjectType agileObject = response.getAgileObject();
             AgileTableType table = agileObject.getTable().get(0);
-            AgileRowType rows[] = table.getRow().toArray(new AgileRowType[0]);
+            AgileRowType[] rows = table.getRow().toArray(new AgileRowType[0]);
 
             String itemNumber = null;
             String itemObjectNumber;
@@ -164,7 +165,7 @@ public class Shared {
                     manName = e.getTextContent();
                 }
             }
-            if (partNumber.equals(keyword)) {
+            if (partNumber != null && partNumber.equals(keyword)) {
                 status.setText("ManufacturerPart"+ " - " + keyword + " Search  SUCCESS");
                 status.getStyleClass().add("label-success");
                 item.objectNumber = quickSearchResponseType.getTable().getRow().get(0).getObjectReferentId().getObjectId().toString();
@@ -215,6 +216,48 @@ public class Shared {
             return -1;
     }
 
+    static agileItem getManufacturerPart(String object, Label status) {
+        agileItem result = new agileItem();
+        GetObjectRequestType getObjectRequestType = new GetObjectRequestType();
+        AgileGetObjectRequest agileGetObjectRequest = new AgileGetObjectRequest();
+        agileGetObjectRequest.setClassIdentifier("CustomCode");
+        agileGetObjectRequest.setObjectNumber(object);
+
+        AgileDataTableRequestType tableRequests = new AgileDataTableRequestType();
+        tableRequests.setTableIdentifier(ItemConstants.TABLE_MANUFACTURERS.toString());
+        tableRequests.setLoadCellMetaData(false);
+        agileGetObjectRequest.getTableRequests().add(tableRequests);
+        getObjectRequestType.getRequests().add(agileGetObjectRequest);
+
+        GetObjectResponseType getObjectResponseType = agileBusinessObjectStub.getObject(getObjectRequestType);
+
+        if (getObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
+            status.setText("CustomCode" + " - " + customCode.itemText + " Search  SUCCESS");
+            status.getStyleClass().remove(0);
+            status.getStyleClass().add(0, "label-success");
+            AgileGetObjectResponse response = getObjectResponseType.getResponses().get(0);
+            AgileObjectType agileObject = response.getAgileObject();
+            AgileTableType table = agileObject.getTable().get(0);
+            AgileRowType[] rows = table.getRow().toArray(new AgileRowType[0]);
+
+            for (AgileRowType row : rows) {
+                result.objectNumber = row.getObjectReferentId().getObjectId().toString();
+                List<Element> messages = row.getAny();
+                for (Element e : messages)
+                    if (e.getTagName().equals("mfrPartNumber"))
+                        result.itemText = e.getTextContent();
+            }
+            return result;
+
+        }
+        else {
+            status.setText("CustomCode Manufacturer " + object + " Search  FAILURE " +
+                    getObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
+            status.getStyleClass().add("label-failure");
+        }
+        return null;
+    }
+
     static String getNextAutoNumber(String cls) {
 
         GetAutoNumbersRequestType getAutoNumbersRequestType = new GetAutoNumbersRequestType();
@@ -230,12 +273,8 @@ public class Shared {
         if( getAutoNumbersResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS) ) {
             AgileGetAutoNumbersResponseType[] responses =
                 getAutoNumbersResponseType.getAutoNumberResponses().toArray(new AgileGetAutoNumbersResponseType[0]);
-            for (AgileGetAutoNumbersResponseType rs : responses) {
-                AutoNumberType[] autonumbers = rs.getAutoNumbers().toArray(new AutoNumberType[0]);
-                for (AutoNumberType auto : autonumbers )
-                    return auto.getAutoNumber().get(0);
-            }
-            return null;
+                AutoNumberType[] autoNumber = responses[0].getAutoNumbers().toArray(new AutoNumberType[0]);
+                    return autoNumber[0].getAutoNumber().get(0);
         }
         else
             return null;
@@ -263,47 +302,75 @@ public class Shared {
     }
     static Element createTextElement (String tagName, String input) {
         Element element = createMessageElement(tagName);
-        element.setTextContent(input.toUpperCase());
-        return element;
+        if(element != null && input != null) {
+            element.setTextContent(input.toUpperCase());
+            return element;
+        }
+        else
+            return null;
     }
     static Element createTextElement (String tagName, String input, String attribute) {
         Element element = createMessageElement(tagName);
-        element.setTextContent(input.toUpperCase());
-        element.setAttribute("attributeId", attribute);
-        return element;
+        if(element != null && input != null) {
+            element.setTextContent(input.toUpperCase());
+            element.setAttribute("attributeId", attribute);
+            return element;
+        }
+        else
+            return null;
     }
     static Element createTextElement(String tagName, ObjectReferentIdType objId) {
         Element element = createMessageElement(tagName, objId);
-        element.setAttributeNS(COMMONNAMESPACEURI, "type", "ObjectReferentIdType");
-        return element;
+        if (element != null) {
+            element.setAttributeNS(COMMONNAMESPACEURI, "type", "ObjectReferentIdType");
+            return element;
+        }
+        else
+            return null;
     }
 
 
     static Element createTextElement (String tagName, double cost, String attribute) {
         Element element = createTextElement(tagName, String.valueOf(cost));
-        element.setAttribute("attributeId", attribute);
-        return element;
+        if(element != null && attribute != null) {
+            element.setAttribute("attributeId", attribute);
+            return element;
+        }
+        else
+            return null;
     }
 
     static Element createTextElement (String tagName, AgileMoneyType cost, String attribute) {
         Element element = createMessageElement(tagName, cost);
-        element.setAttribute("attributeId", attribute);
-        return element;
+        if (element != null) {
+            element.setAttribute("attributeId", attribute);
+            return element;
+        }
+        else
+            return null;
     }
 
     static Element createTextElement (String tagName, TextField inputField) {
         Element element = createMessageElement(tagName);
-        element.setTextContent(inputField.getText().toUpperCase());
-        return element;
+        if (element != null) {
+            element.setTextContent(inputField.getText().toUpperCase());
+            return element;
+        }
+        else
+            return null;
     }
 
     static Element createTextElement (String tagName, ChoiceBox<String> choiceBox) {
         Element element = createMessageElement(tagName);
-        element.setTextContent(choiceBox.getSelectionModel().getSelectedItem());
-        return element;
+        if (element != null) {
+            element.setTextContent(choiceBox.getSelectionModel().getSelectedItem());
+            return element;
+        }
+        else
+            return null;
     }
 
-    static Element createMessageElement(String tagName) {
+    private static Element createMessageElement(String tagName) {
         Document document;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -317,56 +384,66 @@ public class Shared {
     }
 
 
-    static  Element createMessageElement(String tagName, AgileListEntryType agileListEntryType) {
+    private static  Element createMessageElement(String tagName, AgileListEntryType agileListEntryType) {
 
         Element element = createMessageElement(tagName);
         JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(AgileListEntryType.class);
-            Marshaller marshaller = jc.createMarshaller();
+        if (element != null) {
+            try {
+                jc = JAXBContext.newInstance(AgileListEntryType.class);
+                Marshaller marshaller = jc.createMarshaller();
 
-            JAXBElement<AgileListEntryType> jaxbEl = new JAXBElement(new QName("",element.getNodeName()),
-                AgileListEntryType.class, agileListEntryType);
-            marshaller.marshal(jaxbEl, element);
-            element =  (Element) element.getFirstChild();
+                JAXBElement<AgileListEntryType> jaxbEl = new JAXBElement<>(new QName("", element.getNodeName()),
+                        AgileListEntryType.class, agileListEntryType);
+                marshaller.marshal(jaxbEl, element);
+                element = (Element) element.getFirstChild();
 
-        } catch (JAXBException e) {
-            e.printStackTrace();
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
+            element.setAttribute("xmlns:xsi", "http://xmlns.oracle.com/AgileObjects/Core/Common/V1");
+            element.setAttribute("xsi:type", "AgileListEntryType");
+            return element;
         }
-
-        element.setAttribute("xmlns:xsi","http://xmlns.oracle.com/AgileObjects/Core/Common/V1");
-        element.setAttribute("xsi:type", "AgileListEntryType");
-        return element;
+        else
+            return null;
     }
-    static Element createMessageElement(String tagName, ObjectReferentIdType objectReferentIdType) {
+    private static Element createMessageElement(String tagName, ObjectReferentIdType objectReferentIdType) {
 
         Element element = createMessageElement(tagName);
-        JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(ObjectReferentIdType.class);
-            Marshaller marshaller = jc.createMarshaller();
+        if (element != null) {
+            JAXBContext jc;
+            try {
+                jc = JAXBContext.newInstance(ObjectReferentIdType.class);
+                Marshaller marshaller = jc.createMarshaller();
 
-            JAXBElement<ObjectReferentIdType> jaxbEl = new JAXBElement<>(new QName("",element.getNodeName()),
-                ObjectReferentIdType.class, objectReferentIdType);
-            marshaller.marshal(jaxbEl, element);
-            element =  (Element) element.getFirstChild();
+                JAXBElement<ObjectReferentIdType> jaxbEl = new JAXBElement<>(new QName("", element.getNodeName()),
+                        ObjectReferentIdType.class, objectReferentIdType);
+                marshaller.marshal(jaxbEl, element);
+                element = (Element) element.getFirstChild();
 
-        } catch (JAXBException e) {
-            e.printStackTrace();
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
+            element.setAttribute("xmlns:xsi", "http://xmlns.oracle.com/AgileObjects/Core/Common/V1");
+            element.setAttribute("xsi:type", "ObjectReferentIdType");
+            return element;
         }
-
-        element.setAttribute("xmlns:xsi","http://xmlns.oracle.com/AgileObjects/Core/Common/V1");
-        element.setAttribute("xsi:type", "ObjectReferentIdType");
-        return element;
+        else
+            return null;
     }
 
     /*  Create message element for a Money field */
 
-    static Element createMessageElement(String tagName, AgileMoneyType money) {
+    private static Element createMessageElement(String tagName, AgileMoneyType money) {
 
         Element element = createMessageElement(tagName);
         JAXBContext jc;
+        if (element != null) {
         try {
+
             jc = JAXBContext.newInstance(AgileMoneyType.class);
             Marshaller marshaller = jc.createMarshaller();
 
@@ -380,6 +457,9 @@ public class Shared {
             e.printStackTrace();
         }
         return element;
+        }
+        else
+            return null;
     }
 
     static Element createListElement (String tagName, ChoiceBox<String> choiceBox) {
@@ -396,8 +476,12 @@ public class Shared {
         selection.setValue(choiceBox.getSelectionModel().getSelectedItem());
         list.getSelection().add(selection);
         Element element = createMessageElement(tagName, list);
-        element.setAttribute("attributeId", attribute);
-        return element;
+        if (element != null) {
+            element.setAttribute("attributeId", attribute);
+            return element;
+        }
+        else
+            return null;
     }
     static Element createListElement (String tagName, String choice, String attribute) {
         AgileListEntryType list = new AgileListEntryType();
@@ -405,11 +489,15 @@ public class Shared {
         selection.setValue(choice);
         list.getSelection().add(selection);
         Element element = createMessageElement(tagName, list);
-        element.setAttribute("attributeId", attribute);
-        return element;
+        if (element != null) {
+            element.setAttribute("attributeId", attribute);
+            return element;
+        }
+        else
+            return null;
     }
 
-    public static String getMessageElementValue( Element element) {
+    static String getMessageElementValue( Element element) {
         SelectionType selection;
         if (element.getFirstChild() != null) {
 
@@ -432,40 +520,25 @@ public class Shared {
         return null;
     }
     
-    public static Object unmarshalToAgileListEntryType ( Node node) {
+    private static Object unmarshalToAgileListEntryType ( Node node) {
 
         try {
-            JAXBContext jc = null;
-            Class<?> clz = null;
-
-            String xsiType = ((Element)node).getAttributeNS("http://xmlns.oracle.com/AgileObjects/Core/Common/V1", "type");
-            boolean isXSITypeEmpty = "".equals(xsiType) || null==xsiType ? true : false;
-
-            jc = JAXBContext.newInstance(AgileListEntryType.class);
+            JAXBContext jc = JAXBContext.newInstance(AgileListEntryType.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             Object obj = unmarshaller.unmarshal(node);
             JAXBElement<?> jaxbEle = (JAXBElement<?>) obj;
 
             return jaxbEle.getValue();
         } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
     
-    public static Object unmarshalToAgileMoneyType (Node node) {
+    private static Object unmarshalToAgileMoneyType (Node node) {
 
         try {
-            JAXBContext jc = null;
-            Class<?> clz = null;
-
-            String xsiType = ((Element)node).getAttributeNS("http://xmlns.oracle.com/AgileObjects/Core/Common/V1", "type");
-            boolean isXSITypeEmpty = "".equals(xsiType) || null==xsiType ? true : false;
-
-            jc = JAXBContext.newInstance(AgileMoneyType.class);
+            JAXBContext jc = JAXBContext.newInstance(AgileMoneyType.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             Object obj = unmarshaller.unmarshal(node);
             JAXBElement<?> jaxbEle = (JAXBElement<?>) obj;
@@ -474,10 +547,8 @@ public class Shared {
         } catch (JAXBException e) {
             e.printStackTrace();
             return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
+
     }
 
 }

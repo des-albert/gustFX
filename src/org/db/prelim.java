@@ -13,21 +13,14 @@ import com.agile.ws.schema.table.v1.jaxws.*;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
 import org.w3c.dom.Element;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -40,8 +33,6 @@ public class prelim {
 
     @FXML
     Button buttonCreateManPart, buttonQuit, buttonCreatePart, buttonCreateECO, buttonAddCustomCode,  buttonAddManPart;
-    @FXML
-    Button buttonAddImportRow, buttonCreateAgileImport;
     @FXML
     Label label_Product_Category, label_List_Price, label_Reference_Cost, label_Price_Floor, label_Exception, label_AgileId;
     @FXML
@@ -73,15 +64,8 @@ public class prelim {
     static double[] margin = {0.225, 0.35, 0.4, 0.4, 0.35, 0., 0.15, 0.25, 0.35, 0.4, 0., 0.15, 0.25, 0.35, 0.4, 0.5, 0.35};
     static double[] burden = {1.05, 1.05, 1.05, 1.018, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
     static double[] maint = {4., 4., 4, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-    private int priceCatIndex, importRow;
+    private int priceCatIndex;
     private DecimalFormat df = new DecimalFormat("#.00");
-    private HSSFWorkbook wb;
-    private Sheet importSheet;
-    private static String[] importHeading = {"Custom Code", "Part Type", "Description", "Product Line", "Cognizant Engr",
-       "UoM", "Opportunity ID", "Product Category", "Price Category", "Price Treatment", "Product Family",
-        "BOM Class", "Key Forecast Item", "List Price", "Current Sales Total Cost", "Reference Cost",
-        "Price Floor", "Reference Price", "Maintenance Units", "Maintenance Coefficient", "Duration",
-        "MPO Sell Price", "MPO Date Added", "Page Two Notes", "MFR Name", "MFR Part Number" };
 
     private double ref_cost, list_price, floor_price, total_cost, maint_units, maint_coeff;
 
@@ -107,32 +91,6 @@ public class prelim {
         agileECO.itemText = null;
         label_AgileId.setText(agileId);
         label_Exception.setText(exceptionName);
-
-        wb = new HSSFWorkbook();
-        importSheet = wb.createSheet();
-
-        Font importFont =  wb.createFont();
-        importFont.setFontName("Calibri");
-
-        CellStyle headerStyle = wb.createCellStyle();
-        headerStyle.setFillForegroundColor(IndexedColors.YELLOW.index);
-        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        Font headerFont = wb.createFont();
-        headerFont.setColor(IndexedColors.RED.getIndex());
-        headerFont.setFontName("Calibri");
-
-        headerStyle.setFont(headerFont);
-
-        importRow = 0;
-        Row row = importSheet.createRow(importRow);
-        for (int j = 0; j < importHeading.length; j++) {
-            row.createCell(j);
-            importSheet.getRow(0).getCell(j).setCellStyle(headerStyle);
-            importSheet.getRow(0).getCell(j).setCellValue(importHeading[j]);
-        }
-
-        ++importRow;
-
 
         /* Price Category Change Listener */
 
@@ -205,18 +163,16 @@ public class prelim {
 
     }
 
-    static double roundup(double cost) {
+    private double roundup(double cost) {
         int digits = ((int) Math.log10(cost)) - 2;
         double divider = Math.pow(10, digits);
         return divider * Math.ceil(cost / divider);
     }
-    public void ButtonCreateManPartOnAction() {
-        createManufacturePart();
-    }
+
 
     /* Create Manufacturer Part + add Quote */
 
-    private void createManufacturePart() {
+    public void ButtonCreateManPartOnAction() {
 
         CreateObjectRequestType createObjectRequestType = new CreateObjectRequestType();
         AgileCreateObjectRequest agileCreateObjectRequest = new AgileCreateObjectRequest();
@@ -224,11 +180,9 @@ public class prelim {
 
         Element el_man = createTextElement("manufacturerName", choiceBox_Man_Name);
         Element el_manNumber = createTextElement("manufacturerPartNumber", textField_Man_Part_Number);
-        Element el_desc = createTextElement("description", textField_Man_Part_Desc);
         AgileRowType row = new AgileRowType();
         row.getAny().add(el_man);
         row.getAny().add(el_manNumber);
-        row.getAny().add(el_desc);
         agileCreateObjectRequest.setData(row);
 
         createObjectRequestType.getRequests().add(agileCreateObjectRequest);
@@ -237,12 +191,13 @@ public class prelim {
         if (createObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
             manPart.objectNumber = createObjectResponse.getAgileObject().getObjectIdentifier().getObjectId().toString();
             label_Prelim_Status_Message.setText("Manufacturer Part Create SUCCESS");
-            label_Prelim_Status_Message.getStyleClass().add("label-success");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
         } else {
             label_Prelim_Status_Message.setText("Manufacturer Part Create Create FAILURE - " +
                     createObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-            label_Prelim_Status_Message.getStyleClass().add("label-failure");
-            return;
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
         }
 
         /* Add Attachment to Part */
@@ -270,11 +225,40 @@ public class prelim {
         AddFileAttachmentResponseType addFileAttachmentResponseType = agileAttachmentStub.addFileAttachment(addFileAttachmentRequestType);
         if (addFileAttachmentResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
             label_Prelim_Status_Message.setText("Manufacturer Part Attachment SUCCESS");
-            label_Prelim_Status_Message.getStyleClass().add("label-success");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
         } else {
             label_Prelim_Status_Message.setText("Manufacturer Part Attachment  FAILURE - " +
                     addFileAttachmentResponseType.getExceptions().get(0).getException().get(0).getMessage());
-            label_Prelim_Status_Message.getStyleClass().add("label-failure");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
+        }
+
+        // Add description to Manufacturing Part
+
+        UpdateObjectRequestType updateObjectRequestType = new UpdateObjectRequestType();
+        AgileUpdateObjectRequest agileUpdateObjectRequest = new AgileUpdateObjectRequest();
+        agileUpdateObjectRequest.setClassIdentifier("ManufacturerPart");
+        agileUpdateObjectRequest.setObjectNumber(manPart.objectNumber);
+
+        Element el_desc = createTextElement("description", textField_Man_Part_Desc);
+        row = new AgileRowType();
+        row.getAny().add(el_desc);
+        agileUpdateObjectRequest.setData(row);
+
+        updateObjectRequestType.getRequests().add(agileUpdateObjectRequest);
+        UpdateObjectResponseType  updateObjectResponseType = agileBusinessObjectStub.updateObject(updateObjectRequestType);
+
+        if (updateObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
+            label_Prelim_Status_Message.setText("Manufacturing Part Update SUCCESS");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
+        } else {
+            label_Prelim_Status_Message.setText("Manufacturing Part  Update FAILURE - "
+                    + updateObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
+            agileECO.itemText = null;
         }
 
     }
@@ -358,11 +342,13 @@ public class prelim {
             AgileCreateObjectResponse createObjectResponse = createObjectResponseType.getResponses().get(0);
             customCode.objectNumber = createObjectResponse.getAgileObject().getObjectIdentifier().getObjectId().toString();
             label_Prelim_Status_Message.setText("Custom Code Create SUCCESS");
-            label_Prelim_Status_Message.getStyleClass().add("label-success");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
         } else {
             label_Prelim_Status_Message.setText("Custom Code Create  FAILURE - "
                     + createObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-            label_Prelim_Status_Message.getStyleClass().add("label-failure");
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
             return false;
         }
 
@@ -402,7 +388,8 @@ public class prelim {
 
         if (updateObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
             label_Prelim_Status_Message.setText("Custom Code Update SUCCESS");
-            label_Prelim_Status_Message.getStyleClass().add("label-success");;
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0,"label-success");
             listView_Codes.getItems().add(textField_Part_Number.getText());
             agileItem newCode = new agileItem(textField_Part_Number.getText(), customCode.objectNumber);
             customCodeList.add(newCode);
@@ -410,7 +397,8 @@ public class prelim {
         } else {
             label_Prelim_Status_Message.setText("Custom Code Update FAILURE - "
                     + updateObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-            label_Prelim_Status_Message.getStyleClass().add("label-failure");;
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
             agileECO.itemText = null;
             return false;
         }
@@ -447,87 +435,19 @@ public class prelim {
         AddRowsResponseType addRowsResponseType = agileTableStub.addRows(addRowsRequestType);
         if( addRowsResponseType.getStatusCode().equals( ResponseStatusCode.SUCCESS )) {
             label_Prelim_Status_Message.setText("Add Manufacturer Part SUCCESS");
-            label_Prelim_Status_Message.getStyleClass().add("label-success");;
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
         }
         else {
             label_Prelim_Status_Message.setText("Add Manufacturer Part FAILURE - " +
                     addRowsResponseType.getExceptions().get(0).getException().get(0).getMessage());
-            label_Prelim_Status_Message.getStyleClass().add("label-failure");;
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
             agileECO.itemText = null;
         }
     }
 
-    public void ButtonAddImportRowOnAction () {
 
-        Row row = importSheet.createRow(importRow);
-        for (int j = 0; j < importHeading.length; j++)
-            row.createCell(j);
-
-        try {
-
-            importSheet.getRow(importRow).getCell(0).setCellValue(textField_Part_Number.getText().toUpperCase());
-            importSheet.getRow(importRow).getCell(1).setCellValue("CUSTOM CODE");
-            importSheet.getRow(importRow).getCell(2).setCellValue(textField_Part_Description.getText().toUpperCase());
-            importSheet.getRow(importRow).getCell(3).setCellValue(choiceBox_Product_Line.getSelectionModel().getSelectedItem());
-            importSheet.getRow(importRow).getCell(4).setCellValue(agileCognizant);
-            importSheet.getRow(importRow).getCell(5).setCellValue("EA");
-            importSheet.getRow(importRow).getCell(6).setCellValue(agileId);
-            importSheet.getRow(importRow).getCell(7).setCellValue(prodCat);
-            importSheet.getRow(importRow).getCell(8).setCellValue(choiceBox_Price_Category.getSelectionModel().getSelectedItem());
-            importSheet.getRow(importRow).getCell(9).setCellValue("");
-            importSheet.getRow(importRow).getCell(10).setCellValue(choiceBox_Product_Family.getSelectionModel().getSelectedItem());
-            importSheet.getRow(importRow).getCell(11).setCellValue(choiceBox_BoM_Class.getSelectionModel().getSelectedItem());
-            importSheet.getRow(importRow).getCell(12).setCellValue("");
-            importSheet.getRow(importRow).getCell(13).setCellValue(list_price);
-            importSheet.getRow(importRow).getCell(14).setCellValue(total_cost);
-            importSheet.getRow(importRow).getCell(15).setCellValue(ref_cost);
-            importSheet.getRow(importRow).getCell(16).setCellValue(floor_price);
-            importSheet.getRow(importRow).getCell(17).setCellValue(floor_price);
-            importSheet.getRow(importRow).getCell(18).setCellValue(maint_units);
-            importSheet.getRow(importRow).getCell(19).setCellValue(maint_coeff);
-            importSheet.getRow(importRow).getCell(20).setCellValue(duration);
-            importSheet.getRow(importRow).getCell(21).setCellValue("");
-            importSheet.getRow(importRow).getCell(22).setCellValue("");
-            importSheet.getRow(importRow).getCell(23).setCellValue(textArea_Notes.getText().toUpperCase());
-            importSheet.getRow(importRow).getCell(24).setCellValue(choiceBox_Man_Name.getSelectionModel().getSelectedItem());
-            importSheet.getRow(importRow).getCell(25).setCellValue(textField_Man_Part_Number.getText().toUpperCase());
-
-            label_Prelim_Status_Message.setText(textField_Part_Number.getText() + " added to Agile Import File");
-
-        }
-        catch (IllegalArgumentException ex) {
-            label_Prelim_Status_Message.setText("Illegal Argument to setCellValue");
-        }
-
-        ++importRow;
-    }
-
-    public void ButtonAgileImportOnAction() {
-        DateTimeFormatter year = DateTimeFormatter.ofPattern("yyyy");
-        DateTimeFormatter month = DateTimeFormatter.ofPattern("MM");
-        DateTimeFormatter day = DateTimeFormatter.ofPattern("dd");
-        String fileName = "AgileImport-" + agileId + "-" + year.format(LocalDateTime.now()) + "y" +
-                month.format(LocalDateTime.now()) + "m" + day.format(LocalDateTime.now()) + "d.xls";
-        DirectoryChooser dc = new DirectoryChooser();
-        File selectedDirectory = dc.showDialog(getPrimaryStage());
-        String filePath = selectedDirectory.getAbsolutePath() + "\\" + fileName;
-
-        try {
-            File importFile = new File(filePath);
-            if (importFile.exists())
-                if( !importFile.delete() )
-                    label_Prelim_Status_Message.setText(filePath + " Delete error");
-            if (importFile.createNewFile()) {
-                FileOutputStream fileOut = new FileOutputStream(importFile);
-                wb.write(fileOut);
-                fileOut.close();
-                label_Prelim_Status_Message.setText(filePath + " created");
-            }
-        }
-        catch (IOException ex) {
-                ex.printStackTrace();
-        }
-    }
 
     public void ButtonAddCustomCodeOnAction() {
         customCode.objectNumber = agileSearchCode("CustomCode", textField_Part_Number.getText(), label_Prelim_Status_Message);
@@ -537,7 +457,9 @@ public class prelim {
     }
     public void ButtonAddManPartOnAction() {
         manPart.itemText = textField_Man_Part_Number.getText();
-        manPart.objectNumber = agileSearchPart(manPart.itemText, label_Prelim_Status_Message).objectNumber;
+        agileItem result = agileSearchPart(manPart.itemText, label_Prelim_Status_Message);
+        if (result != null)
+            manPart.objectNumber = result.objectNumber;
     }
 
     public void ButtonCreateECOOnAction() {
@@ -598,12 +520,14 @@ public class prelim {
                 AgileCreateObjectResponse createObjectResponse = createObjectResponseType.getResponses().get(0);
                 agileECO.objectNumber = createObjectResponse.getAgileObject().getObjectIdentifier().getObjectId().toString();
                 label_Prelim_Status_Message.setText("ECO " + agileECO.itemText + " Create SUCCESS");
-                label_Prelim_Status_Message.getStyleClass().add("label-success");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
                 return true;
             } else {
                 label_Prelim_Status_Message.setText("ECO Create FAILURE - "
                         + createObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
-                label_Prelim_Status_Message.getStyleClass().add("label-failure");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
                 agileECO.itemText = null;
                 return false;
             }
@@ -636,13 +560,15 @@ public class prelim {
             AddRowsResponseType addRowsResponseType = agileTableStub.addRows(addRowsRequestType);
             if (addRowsResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
                 label_Prelim_Status_Message.setText("Add Affected Item " + item.itemText + " SUCCESS");
-                label_Prelim_Status_Message.getStyleClass().add("label-success");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
 
             }
             else {
                 label_Prelim_Status_Message.setText("Add Affected Item FAILURE - " + item.itemText + " " +
                         addRowsResponseType.getExceptions().get(0).getException().get(0).getMessage());
-                label_Prelim_Status_Message.getStyleClass().add("label-failure");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
                 return false;
             }
 
@@ -671,13 +597,15 @@ public class prelim {
             UpdateRowsResponseType updateRowsResponseType = agileTableStub.updateRows(updateRowsRequestType);
             if (updateRowsResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
                 label_Prelim_Status_Message.setText("Add new Revision SUCCESS");
-                label_Prelim_Status_Message.getStyleClass().add("label-success");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
 
             }
             else {
                 label_Prelim_Status_Message.setText("Add Affected Item FAILURE - " +
                         updateRowsResponseType.getExceptions().get(0).getException().get(0).getMessage());
-                label_Prelim_Status_Message.getStyleClass().add("label-failure");
+                label_Prelim_Status_Message.getStyleClass().remove(0);
+                label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
                 return false;
             }
         }

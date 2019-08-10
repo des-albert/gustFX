@@ -8,11 +8,8 @@ import com.agile.ws.schema.table.v1.jaxws.LoadTableRequestType;
 import com.agile.ws.schema.table.v1.jaxws.LoadTableResponseType;
 import com.agile.ws.schema.table.v1.jaxws.RequestTableType;
 import com.sforce.soap.enterprise.QueryResult;
-import com.sforce.soap.enterprise.sobject.Exception__c;
-import com.sforce.soap.enterprise.sobject.Opportunity;
-import com.sforce.soap.enterprise.sobject.SObject;
+import com.sforce.soap.enterprise.sobject.*;
 import com.sforce.ws.ConnectionException;
-import com.sforce.soap.enterprise.sobject.Task;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -32,10 +29,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
 
 import org.w3c.dom.Element;
 
@@ -45,8 +40,6 @@ import static org.db.Base.agileCollaborationStub;
 import static org.db.Base.agileTableStub;
 
 import static org.db.Shared.*;
-
-import static org.apache.commons.lang3.StringUtils.chop;
 
 public class Exceptions {
   @FXML
@@ -66,7 +59,7 @@ public class Exceptions {
 
   private static String exceptionId, taskId;
   static String exceptionName, agileId;
-  private String taskSubject, taskStatus, changeStatus;
+  private String taskSubject, taskStatus;
   private DateTimeFormatter dtf;
 
 
@@ -92,7 +85,8 @@ public class Exceptions {
     tableSetup();
     if (load_exceptions()) {
       labelStatus_Message.setText("Exceptions Loaded");
-      labelStatus_Message.getStyleClass().add("label-success");
+      labelStatus_Message.getStyleClass().remove(0);
+      labelStatus_Message.getStyleClass().add("0, label-success");
     }
 
   }
@@ -180,7 +174,8 @@ public class Exceptions {
                   prelimStage.setOnHiding(e -> updatePreliminaryStatus());
                 } catch (IOException ex) {
                   labelStatus_Message.setText("preliminary FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().add("label-failure");
+                  labelStatus_Message.getStyleClass().remove(0);
+                  labelStatus_Message.getStyleClass().add(0,"label-failure");
                 }
               }
               else if (taskSubject.contains("FA")) {
@@ -200,7 +195,8 @@ public class Exceptions {
                 }
                 catch (IOException ex) {
                   labelStatus_Message.setText("first Article FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().add("label-failure");
+                  labelStatus_Message.getStyleClass().remove(0);
+                  labelStatus_Message.getStyleClass().add(0, "label-failure");
                 }
               }
               else {
@@ -216,7 +212,8 @@ public class Exceptions {
                 }
                 catch (IOException ex) {
                   labelStatus_Message.setText("Revision FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().add("label-failure");
+                  labelStatus_Message.getStyleClass().remove(0);
+                  labelStatus_Message.getStyleClass().add(0, "label-failure");
                 }
 
 
@@ -248,7 +245,8 @@ public class Exceptions {
 
                   } catch (ConnectionException ex) {
                     labelStatus_Message.setText("Task Status Updated");
-                    labelStatus_Message.getStyleClass().add("label-success");
+                    labelStatus_Message.getStyleClass().remove(0);
+                    labelStatus_Message.getStyleClass().add(0, "label-success");
                   }
                 }
               }
@@ -296,7 +294,8 @@ public class Exceptions {
 
       } catch (ConnectionException ex) {
         labelStatus_Message.setText("update Preliminary Status Error");
-        labelStatus_Message.getStyleClass().add("label-failure");
+        labelStatus_Message.getStyleClass().remove(0);
+        labelStatus_Message.getStyleClass().add(0, "label-failure");
       }
     }
   }
@@ -320,7 +319,8 @@ public class Exceptions {
 
       } catch (ConnectionException ex) {
         labelStatus_Message.setText("update first Article Status Error");
-        labelStatus_Message.getStyleClass().add("label-failure");
+        labelStatus_Message.getStyleClass().remove(0);
+        labelStatus_Message.getStyleClass().add(0, "label-failure");
       }
     }
   }
@@ -348,8 +348,8 @@ public class Exceptions {
     tableViewExceptions.setItems(exData);
 
     StringBuilder exQuery = new StringBuilder("SELECT Id, Name, Agile_ECO_MCO__c, Agile_Opportunity_ID__c, ");
-    exQuery.append("Exception_Decision_Due__c, Opportunity_Name__c, Status__c, Exception_Number__c, ");
-    exQuery.append("Quoting_Instructions__c FROM Exception__c WHERE (RecordTypeId = '0120b000000lBV8AAM' ");
+    exQuery.append("Bid_Due_Date_Opportunity__c, Opportunity_Name__c, Status__c, Exception_Number__c ");
+    exQuery.append("FROM Exception__c WHERE (RecordTypeId = '0120b000000lBV8AAM' ");
     exQuery.append("OR RecordTypeId = '0120b000000ZhTWAA0')" );
     exQuery.append("AND Status__c <> 'Cancelled' AND Sales_Enablement_User__c = '");
     exQuery.append(sfdcOwnerId);
@@ -365,6 +365,8 @@ public class Exceptions {
     StringBuilder oppQuery = new StringBuilder("SELECT Id, Name FROM Opportunity WHERE Id IN ('");
 
     try {
+
+      String changeStatus;
 
       /* Exception Task Query */
 
@@ -469,23 +471,33 @@ public class Exceptions {
             }
           }
 
-          String instructions = exception[i].getQuoting_Instructions__c();
-          if (instructions != null) {
-            instructions = instructions.replaceAll("<br>", ",");
-            instructions = chop(instructions);
+          String partQuery = "SELECT Name from Product2 WHERE Id IN " +
+           "(SELECT Marketing_Code__c FROM Product_Line_Item__c WHERE Exception__c = '" +
+            exception[i].getId() + "')";
+
+          /* Product Line Item Query */
+
+          QueryResult lq = connection.query(partQuery);
+          SObject[] liRecords = lq.getRecords();
+
+          StringBuilder codes = new StringBuilder();
+          for (SObject obj : liRecords) {
+            codes.append(((Product2) obj).getName());
+            codes.append("\n");
           }
+
           if (!taskStatus.contains("Completed")) {
             exDisplay row = new exDisplay(
                 mapOpportunity.get(exception[i].getOpportunity_Name__c()),
                 exception[i].getName(),
-                formatter.format(exception[i].getException_Decision_Due__c().getTime()),
+                formatter.format(exception[i].getBid_Due_Date_Opportunity__c().getTime()),
                 exception[i].getStatus__c(),
                 exception[i].getException_Number__c(),
                 exception[i].getAgile_Opportunity_ID__c(),
                 taskECOMCO,
                 approvers,
                 taskStatus,
-                instructions
+                codes.toString()
 
             );
           exData.add(row);
@@ -537,7 +549,8 @@ public class Exceptions {
           return MakeKey(objId, changeStatus);
       }
       labelStatus_Message.setText("Change Status Request Error");
-      labelStatus_Message.getStyleClass().add("label-failure");
+      labelStatus_Message.getStyleClass().remove(0);
+      labelStatus_Message.getStyleClass().add(0, "label-failure");
       return null;
   }
   
@@ -551,7 +564,7 @@ public class Exceptions {
       table.setTableIdentifier("Workflow");
 
       LoadTableRequestType loadTableRequestType = new LoadTableRequestType();
-      loadTableRequestType.getTableRequest().addAll(Arrays.asList(table));
+      loadTableRequestType.getTableRequest().addAll(Collections.singletonList(table));
       LoadTableResponseType loadTableResponseType = agileTableStub.loadTable(loadTableRequestType);
 
       if(loadTableResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
@@ -573,7 +586,8 @@ public class Exceptions {
               }
           } catch (NullPointerException e) {
               labelStatus_Message.setText("Change workflow error");
-              labelStatus_Message.getStyleClass().add("label-failure");
+              labelStatus_Message.getStyleClass().remove(0);
+              labelStatus_Message.getStyleClass().add(0, "label-failure");
           }
           return appStatus.toString();
       }

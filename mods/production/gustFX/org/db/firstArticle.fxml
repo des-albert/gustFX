@@ -21,7 +21,7 @@
    <Label layoutX="27.0" layoutY="299.0" prefHeight="18.0" prefWidth="141.0" styleClass="label-caption" stylesheets="@../../css/gust.css"  text="Product Team" />
    <Label layoutX="27.0" layoutY="354.0" prefHeight="18.0" prefWidth="141.0" styleClass="label-caption" stylesheets="@../../css/gust.css"  text="Product Line" />
 
-   <Label fx:id="label_FA_Status" layoutX="21.0" layoutY="421.0" prefHeight="22.0" prefWidth="566.0" stylesheets="@../../css/gust.css"  text="Status" />
+   <Label fx:id="label_FA_Status" layoutX="21.0" layoutY="421.0" prefHeight="22.0" prefWidth="566.0" styleClass="label-success" stylesheets="@../../css/gust.css"  text="Status" />
    <Label layoutX="191.0" layoutY="40.0" styleClass="label-heading" stylesheets="@../../css/gust.css"  text="Release to FA" />
    <ImageView fitHeight="59.0" fitWidth="116.0" layoutX="429.0" layoutY="373.0" pickOnBounds="true" preserveRatio="true">
          <Image url="@../../img/gust.png" />

@@ -42,7 +42,7 @@ public class Base {
   @FXML
   Button buttonExceptions, buttonBaseQuit;
 
-  private static final String VERSION = "V 1.0";
+  private static final String VERSION = "V 2.0";
   private static String agileServerURL, agileUsername, userFullName;
 
   static String sfdcOwnerId, agileCognizant;
@@ -64,14 +64,17 @@ public class Base {
     if (sfdcLogin()) {
       if (agileLogin()) {
         label_User.setText("Salesforce and Agile login success");
-        label_User.getStyleClass().add("label-success");
+        label_User.getStyleClass().remove(0);
+        label_User.getStyleClass().add(0, "label-success");
       } else {
         label_User.setText("Agile login failed");
-        label_User.getStyleClass().add("label-failure");
+        label_User.getStyleClass().remove(0);
+        label_User.getStyleClass().add(0, "label-failure");
       }
     } else {
       label_User.setText("Salesforce login failed");
-      label_User.getStyleClass().add("label-failure");
+      label_User.getStyleClass().remove(0);
+      label_User.getStyleClass().add(0, "label-failure");
     }
 
   }
@@ -116,7 +119,8 @@ public class Base {
       agileCognizant = br.readLine();
 
       label_User.setText(userFullName + " Salesforce login success");
-      label_User.getStyleClass().add("label-success");
+      label_User.getStyleClass().remove(0);
+      label_User.getStyleClass().add(0, "label-success");
 
       br.close();
       fr.close();
@@ -157,7 +161,8 @@ public class Base {
     } catch (ConnectionException | IOException ce) {
       ce.printStackTrace();
       label_User.setText("Salesforce login failed");
-      label_User.getStyleClass().add("label-failure");
+      label_User.getStyleClass().remove(0);
+      label_User.getStyleClass().add(0, "label-failure");
 
       return false;
     }
@@ -228,11 +233,13 @@ public class Base {
 
       } catch (IOException ce) {
         label_User.setText("Agile login failed");
-        label_User.getStyleClass().add("label-failure");
+        label_User.getStyleClass().remove(0);
+        label_User.getStyleClass().add(0, "label-failure");
       }
 
       label_User.setText(userFullName + " Salesforce + Agile login success");
-      label_User.getStyleClass().add("label-success");
+    label_User.getStyleClass().remove(0);
+      label_User.getStyleClass().add(0, "label-success");
       return true;
     }
 
@@ -251,7 +258,8 @@ public class Base {
       } catch (IOException ex) {
         ex.printStackTrace();
         label_User.setText("Exceptions FormLoader failed");
-        label_User.getStyleClass().add("label-failure");
+        label_User.getStyleClass().remove(0);
+        label_User.getStyleClass().add(0, "label-failure");
       }
     }
   }
