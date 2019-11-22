@@ -326,9 +326,31 @@ public class Exceptions {
   }
 
   private void updateReviseStatus() {
+    if (agileECO.itemText != null) {
+      try {
+        Task updateTask = new Task();
+        updateTask.setId(taskId);
+        updateTask.setStatus("In Progress");
+        updateTask.setDescription("ECO " + agileMCO.itemText + " created - " +
+                dtf.format(LocalDateTime.now()) + "\n");
+        updateTask.setException_Agile_ECO_MCO__c("ECO " + agileMCO.itemText);
+        connection.update(new SObject[]{updateTask});
+
+        exDisplay row = exData.get(rowSelect);
+        row.setExTask("In Progress");
+        row.setExECO_MCO("ECO " + agileMCO.itemText + " " +
+                getKeyStatus(getChangeStatus(agileECO.itemText, "ECO")));
+        tableViewExceptions.refresh();
+
+      } catch (ConnectionException ex) {
+        labelStatus_Message.setText("update revision Status Error");
+        labelStatus_Message.getStyleClass().remove(0);
+        labelStatus_Message.getStyleClass().add(0, "label-failure");
+      }
+    }
 
   }
-  private void openWebpage(String url) {
+  static void openWebpage(String url) {
     try {
       Desktop desktop = java.awt.Desktop.getDesktop();
       desktop.browse(new URL(url).toURI());
@@ -456,10 +478,12 @@ public class Exceptions {
               taskECOMCO = exception[i].getAgile_ECO_MCO__c();
             }
 
+            // Revision Code
+
           } else {
 
             taskStatus = "Revision " + taskStatus;
-            if (taskStatus.equals("In Progress")) {
+            if (taskStatus.contains("In Progress")) {
               changeStatus = getChangeStatus(taskECOMCO.substring(4), "ECO");
               if (changeStatus != null) {
                 taskECOMCO = taskECOMCO + "\n" + getKeyStatus(changeStatus);
@@ -511,7 +535,7 @@ public class Exceptions {
   
     return true;
   }
-  
+
   private String MakeKey(String id, String status) {
       return id + '~' + status;
   }

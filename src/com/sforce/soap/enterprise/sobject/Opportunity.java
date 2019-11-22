@@ -2082,32 +2082,32 @@ public class Opportunity extends com.sforce.soap.enterprise.sobject.SObject {
     }
 
     /**
-     * element : Shares of type {urn:enterprise.soap.sforce.com}QueryResult
-     * java type: com.sforce.soap.enterprise.QueryResult
+     * element : Ship_Date__c of type {http://www.w3.org/2001/XMLSchema}date
+     * java type: java.util.Calendar
      */
-    private boolean Shares__is_set = false;
+    private boolean Ship_Date__c__is_set = false;
 
-    private com.sforce.soap.enterprise.QueryResult Shares;
+    private java.util.Calendar Ship_Date__c;
 
-    public com.sforce.soap.enterprise.QueryResult getShares() {
-      return Shares;
+    public java.util.Calendar getShip_Date__c() {
+      return Ship_Date__c;
     }
 
-    public void setShares(com.sforce.soap.enterprise.QueryResult Shares) {
-      this.Shares = Shares;
-      Shares__is_set = true;
+    public void setShip_Date__c(java.util.Calendar Ship_Date__c) {
+      this.Ship_Date__c = Ship_Date__c;
+      Ship_Date__c__is_set = true;
     }
 
-    protected void setShares(com.sforce.ws.parser.XmlInputStream __in,
+    protected void setShip_Date__c(com.sforce.ws.parser.XmlInputStream __in,
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
-      if (__typeMapper.isElement(__in, _lookupTypeInfo("Shares", "urn:sobject.enterprise.soap.sforce.com","Shares","urn:enterprise.soap.sforce.com","QueryResult",0,1,true))) {
-        setShares((com.sforce.soap.enterprise.QueryResult)__typeMapper.readObject(__in, _lookupTypeInfo("Shares", "urn:sobject.enterprise.soap.sforce.com","Shares","urn:enterprise.soap.sforce.com","QueryResult",0,1,true), com.sforce.soap.enterprise.QueryResult.class));
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Ship_Date__c", "urn:sobject.enterprise.soap.sforce.com","Ship_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true))) {
+        setShip_Date__c((java.util.Calendar)__typeMapper.readObject(__in, _lookupTypeInfo("Ship_Date__c", "urn:sobject.enterprise.soap.sforce.com","Ship_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true), java.util.Calendar.class));
       }
     }
 
-    private void writeFieldShares(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
-      __typeMapper.writeObject(__out, _lookupTypeInfo("Shares", "urn:sobject.enterprise.soap.sforce.com","Shares","urn:enterprise.soap.sforce.com","QueryResult",0,1,true), Shares, Shares__is_set);
+    private void writeFieldShip_Date__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Ship_Date__c", "urn:sobject.enterprise.soap.sforce.com","Ship_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true), Ship_Date__c, Ship_Date__c__is_set);
     }
 
     /**
@@ -2282,6 +2282,35 @@ public class Opportunity extends com.sforce.soap.enterprise.sobject.SObject {
 
     private void writeFieldTrackingNumber__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
       __typeMapper.writeObject(__out, _lookupTypeInfo("TrackingNumber__c", "urn:sobject.enterprise.soap.sforce.com","TrackingNumber__c","http://www.w3.org/2001/XMLSchema","string",0,1,true), TrackingNumber__c, TrackingNumber__c__is_set);
+    }
+
+    /**
+     * element : Transaction_Execute_by_Date__c of type {http://www.w3.org/2001/XMLSchema}date
+     * java type: java.util.Calendar
+     */
+    private boolean Transaction_Execute_by_Date__c__is_set = false;
+
+    private java.util.Calendar Transaction_Execute_by_Date__c;
+
+    public java.util.Calendar getTransaction_Execute_by_Date__c() {
+      return Transaction_Execute_by_Date__c;
+    }
+
+    public void setTransaction_Execute_by_Date__c(java.util.Calendar Transaction_Execute_by_Date__c) {
+      this.Transaction_Execute_by_Date__c = Transaction_Execute_by_Date__c;
+      Transaction_Execute_by_Date__c__is_set = true;
+    }
+
+    protected void setTransaction_Execute_by_Date__c(com.sforce.ws.parser.XmlInputStream __in,
+        com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
+      __in.peekTag();
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Transaction_Execute_by_Date__c", "urn:sobject.enterprise.soap.sforce.com","Transaction_Execute_by_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true))) {
+        setTransaction_Execute_by_Date__c((java.util.Calendar)__typeMapper.readObject(__in, _lookupTypeInfo("Transaction_Execute_by_Date__c", "urn:sobject.enterprise.soap.sforce.com","Transaction_Execute_by_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true), java.util.Calendar.class));
+      }
+    }
+
+    private void writeFieldTransaction_Execute_by_Date__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Transaction_Execute_by_Date__c", "urn:sobject.enterprise.soap.sforce.com","Transaction_Execute_by_Date__c","http://www.w3.org/2001/XMLSchema","date",0,1,true), Transaction_Execute_by_Date__c, Transaction_Execute_by_Date__c__is_set);
     }
 
     /**
@@ -2463,13 +2492,14 @@ public class Opportunity extends com.sforce.soap.enterprise.sobject.SObject {
       writeFieldProcessSteps(__out, __typeMapper);
       writeFieldQualified_Quote__c(__out, __typeMapper);
       writeFieldRecordAssociatedGroups(__out, __typeMapper);
-      writeFieldShares(__out, __typeMapper);
+      writeFieldShip_Date__c(__out, __typeMapper);
       writeFieldStageName(__out, __typeMapper);
       writeFieldSystemModstamp(__out, __typeMapper);
       writeFieldTasks(__out, __typeMapper);
       writeFieldTopicAssignments(__out, __typeMapper);
       writeFieldTotalOpportunityQuantity(__out, __typeMapper);
       writeFieldTrackingNumber__c(__out, __typeMapper);
+      writeFieldTransaction_Execute_by_Date__c(__out, __typeMapper);
       writeFieldType(__out, __typeMapper);
       writeFieldUserRecordAccess(__out, __typeMapper);
     }
@@ -2547,13 +2577,14 @@ public class Opportunity extends com.sforce.soap.enterprise.sobject.SObject {
       setProcessSteps(__in, __typeMapper);
       setQualified_Quote__c(__in, __typeMapper);
       setRecordAssociatedGroups(__in, __typeMapper);
-      setShares(__in, __typeMapper);
+      setShip_Date__c(__in, __typeMapper);
       setStageName(__in, __typeMapper);
       setSystemModstamp(__in, __typeMapper);
       setTasks(__in, __typeMapper);
       setTopicAssignments(__in, __typeMapper);
       setTotalOpportunityQuantity(__in, __typeMapper);
       setTrackingNumber__c(__in, __typeMapper);
+      setTransaction_Execute_by_Date__c(__in, __typeMapper);
       setType(__in, __typeMapper);
       setUserRecordAccess(__in, __typeMapper);
     }
@@ -2630,13 +2661,14 @@ public class Opportunity extends com.sforce.soap.enterprise.sobject.SObject {
       toStringHelper(sb, "ProcessSteps", ProcessSteps);
       toStringHelper(sb, "Qualified_Quote__c", Qualified_Quote__c);
       toStringHelper(sb, "RecordAssociatedGroups", RecordAssociatedGroups);
-      toStringHelper(sb, "Shares", Shares);
+      toStringHelper(sb, "Ship_Date__c", Ship_Date__c);
       toStringHelper(sb, "StageName", StageName);
       toStringHelper(sb, "SystemModstamp", SystemModstamp);
       toStringHelper(sb, "Tasks", Tasks);
       toStringHelper(sb, "TopicAssignments", TopicAssignments);
       toStringHelper(sb, "TotalOpportunityQuantity", TotalOpportunityQuantity);
       toStringHelper(sb, "TrackingNumber__c", TrackingNumber__c);
+      toStringHelper(sb, "Transaction_Execute_by_Date__c", Transaction_Execute_by_Date__c);
       toStringHelper(sb, "Type", Type);
       toStringHelper(sb, "UserRecordAccess", UserRecordAccess);
     }

@@ -200,9 +200,9 @@ public class Shared {
                     List<Element> messages = row.getAny();
                     for (Element element : messages) {
                         if (!element.getTagName().equals(tag))
-                            continue;
+                            assert true;
                         else if (!element.getFirstChild().getNodeValue().equals(childNum))
-                            continue;
+                            assert true;
                         else
                             rowID = row.getRowId();
                     }

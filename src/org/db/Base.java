@@ -30,7 +30,7 @@ import javax.xml.ws.BindingProvider;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.net.*;
 import java.util.Map;
 
 import static org.db.Shared.*;
@@ -42,10 +42,10 @@ public class Base {
   @FXML
   Button buttonExceptions, buttonBaseQuit;
 
-  private static final String VERSION = "V 2.0";
-  private static String agileServerURL, agileUsername, userFullName;
+  private static final String VERSION = "V 4.0";
+  private static String agileServerURL, agileUsername;
 
-  static String sfdcOwnerId, agileCognizant;
+  static String sfdcOwnerId, agileCognizant, userFullName;
   static EnterpriseConnection connection;
   private static String password;
 
@@ -59,15 +59,24 @@ public class Base {
   static ObservableList<String> manNameChoices, productTeams, analysts, prodLineChoices, priceCatChoices,
       prodFamilyChoices, bomClassChoices, codeTypes;
 
+
   public void initialize() {
 
     if (sfdcLogin()) {
-      if (agileLogin()) {
-        label_User.setText("Salesforce and Agile login success");
-        label_User.getStyleClass().remove(0);
-        label_User.getStyleClass().add(0, "label-success");
-      } else {
-        label_User.setText("Agile login failed");
+      if (isVPN()) {
+        if (agileLogin()) {
+          String version = "JDK " + Runtime.version() + " " + "JavaFX " + System.getProperties().get("javafx.runtime.version");
+          label_User.setText("Salesforce and Agile login success - \n" + version);
+          label_User.getStyleClass().remove(0);
+          label_User.getStyleClass().add(0, "label-success");
+        } else {
+          label_User.setText("Agile login failed");
+          label_User.getStyleClass().remove(0);
+          label_User.getStyleClass().add(0, "label-failure");
+        }
+      }
+      else {
+        label_User.setText("VPN not connected");
         label_User.getStyleClass().remove(0);
         label_User.getStyleClass().add(0, "label-failure");
       }
@@ -110,6 +119,7 @@ public class Base {
       config.setAuthEndpoint(authEndPoint);
       connection = new EnterpriseConnection(config);
 
+
       agileServerURL = br.readLine();
       if (agileServerURL.contains("dv"))
         label_Version.setText(version + "DV");
@@ -143,7 +153,7 @@ public class Base {
       priceCatChoices = FXCollections.observableArrayList("CE-HW-CPG", "CE-HW-SCP",
           "CE-HW-SPG", "CE-SW", "CE-INST", "SUPHW30", "SUPHW3P", "SUPHW3L", "SUPHW3M", "SUPHW3H", "" +
               "SUPSW30", "SUPSW3P", "SUPSW3L", "SUPSW3M", "SUPSW3H", "CE-SVC-PS", "CE-SVC-TNG");
-      prodFamilyChoices = FXCollections.observableArrayList("CA", "CS", "DDN", "ES", "SNX", "STO", "XA");
+      prodFamilyChoices = FXCollections.observableArrayList("CA", "CS", "DDN", "ES", "SHM", "SHR", "SNX", "STO", "XA");
       bomClassChoices = FXCollections.observableArrayList("ctBomBlade", "ctBomBladeOpt", "ctBomBoot",
           "ctBomCabAux", "ctBomCabOp", "ctBomCabs", "ctBomDoors", "ctBomFacility", "ctBomFreight", "ctBomFte",
           "ctBomFtePs", "ctBomHba", "ctBomHbaCables", "ctBomHbaSsd", "ctBomInstall", "ctBomInstallSw", "ctBomMem",
@@ -168,8 +178,18 @@ public class Base {
     }
   }
 
+  private boolean isVPN() {
+    try {
+      URI uri = new URI(agileServerURL);
+      InetAddress.getByName(uri.getHost()).isReachable(3000);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
   private boolean agileLogin() {
-      try {
+
+    try{
         String BUSINESS_OBJECT_URL = "/BusinessObject";
         URL url = new URL(agileServerURL + BUSINESS_OBJECT_URL + "?wsdl");
         BusinessObjectService businessLocator = new BusinessObjectService(url);
@@ -262,6 +282,22 @@ public class Base {
         label_User.getStyleClass().add(0, "label-failure");
       }
     }
+
+  public void ButtonOpportunitiesOnAction() {
+    try {
+      FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("opportunities.fxml"));
+      Parent partForm = fxmlFormLoader.load();
+      Stage exceptionStage = new Stage();
+      exceptionStage.setTitle("Sales Operations Opportunities");
+      exceptionStage.setScene(new Scene(partForm, 1250, 650));
+      exceptionStage.show();
+    } catch ( IOException ex) {
+      ex.printStackTrace();
+      label_User.setText("Opportunities FormLoader failed");
+      label_User.getStyleClass().remove(0);
+      label_User.getStyleClass().add(0, "label-failure");
+    }
+  }
   }
 
 

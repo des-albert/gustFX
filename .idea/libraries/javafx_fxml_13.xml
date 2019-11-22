@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="javafx.fxml-11.0.2">
+  <library name="javafx.fxml-13">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/javafx.fxml-11.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx.fxml-13.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

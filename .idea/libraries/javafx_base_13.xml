@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="javafx.controls-11.0.2">
+  <library name="javafx.base-13">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/javafx.controls-11.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx.base-13.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
