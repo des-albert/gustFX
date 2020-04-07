@@ -58,7 +58,7 @@ public class revise {
     private static String FXRate = "1.0";
     private double ref_cost, list_price, floor_price, total_cost, maint_units;
     private DecimalFormat df = new DecimalFormat("#.00");
-    private int priceCatIndex = -1;
+    private int priceCatIndex;
 
     private final static String CONST_TOTAL_COST = ItemConstants.ATT_PAGE_THREE_NUMERIC02.toString();
     private final static String CONST_LIST_PRICE = ItemConstants.ATT_PAGE_THREE_NUMERIC01.toString();
@@ -119,7 +119,7 @@ public class revise {
         label_Floor_Price.setText(df.format(floor_price));
         label_Reference_Price.setText(df.format(floor_price));
 
-        if (priceCatIndex < 3 || priceCatIndex == 4 || priceCatIndex > 14)
+        if (priceCatIndex < 6 )
             list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]) / 0.7d);
         else
             list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]));
@@ -139,7 +139,7 @@ public class revise {
     public void ButtonCreateECOOnAction() {
         String ECO_Extended_Description = "EFFECTIVITY: UPON RELEASE\n\nMATERIAL DISPOSITION: NONE\n\n" +
                 "FIELD IMPACT: NO IMPACT\n \n JIRA#: N/A\n \n" +
-                "REASON FOR CHANGE: CUSTOM CODE REQUIRED FOR EXECUTION AND QUOTING IN BIGMACHINES\n \n" +
+                "REASON FOR CHANGE: CUSTOM CODE UPDATE FOR EXECUTION AND QUOTING IN BIGMACHINES\n \n" +
                 "AGENCY COMPLIANCE IMPACT: NO IMPACT\n \n" +
                 "OTHER IMPACT:\n GOODS BURDEN: 1.8% \n" +
                 "LABOR BURDEN: 3.2% \n NON-GOODS BURDEN: 0%\n EXCHANGE RATE per USD: " + FXRate;
@@ -149,9 +149,9 @@ public class revise {
         AgileRowType row = new AgileRowType();
 
         if (exceptionName == null) {
-            TextInputDialog labelDialog = new TextInputDialog();
-            labelDialog.setHeaderText("Enter Exception Number :");
-            Optional<String> exceptionInput = labelDialog.showAndWait();
+            TextInputDialog reviseDialog = new TextInputDialog();
+            reviseDialog.setHeaderText("Enter Exception Number :");
+            Optional<String> exceptionInput = reviseDialog.showAndWait();
             exceptionName = exceptionInput.toString();
         }
 
@@ -201,6 +201,7 @@ public class revise {
     }
 
     public void ButtonSelectCustomCodeOnAction() {
+        customCode.itemText = textField_Part_Number.getText();
         customCode.objectNumber = agileSearchCode("CustomCode", customCode.itemText, label_Revise_Status);
 
         GetObjectRequestType getObjectRequestType = new GetObjectRequestType();

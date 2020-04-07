@@ -33,7 +33,7 @@
     -fx-font-size: 12;
 }
 .label-heading{
--fx-text-fill: #a378cd;
+-fx-text-fill: #cdc660;
 -fx-font-family: 'Lucida Calligraphy';
 -fx-font-size: 16;
 }
@@ -43,7 +43,7 @@
 -fx-font-size: 12;
 }
 #anchor {
--fx-background-color: rgba(122, 74, 118, 0.76);
+-fx-background-color: #53747f;
 }
 .button-fill {
     -fx-background-color: #fff196;

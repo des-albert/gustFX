@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="javafx.graphics-13">
+  <library name="javafx.fxml-14">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/javafx.graphics-13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javafx.fxml-14.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

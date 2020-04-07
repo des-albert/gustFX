@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="anchor" prefHeight="650.0" prefWidth="1790.0" stylesheets="@../../css/gust.css" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.db.Exceptions">
+<AnchorPane id="anchor" prefHeight="650.0" prefWidth="1790.0" stylesheets="@../../css/gust.css" xmlns="http://javafx.com/javafx/12.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.db.Exceptions">
     <children>
         <Button fx:id="buttonExceptionQuit" layoutX="1672.0" layoutY="10.0" mnemonicParsing="false" onAction="#ButtonExceptionQuitOnAction" styleClass="button-fill" stylesheets="@../../css/gust.css" text="Quit" />
         <TableView fx:id="tableViewExceptions" layoutX="39.0" layoutY="50.0" prefHeight="550.0" prefWidth="1679.0" styleClass="text-fill" stylesheets="@../../css/gust.css">

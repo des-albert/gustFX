@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="javafx.fxml-13">
+  <library name="commons-compress-1.19">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/javafx.fxml-13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-compress-1.19.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,6 +1,5 @@
 <component name="libraryTable">
-  <library name="javax.jws:javax.jws-api:1.1" type="repository">
-    <properties maven-id="javax.jws:javax.jws-api:1.1" />
+  <library name="javax.jws-api-1.1">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/javax.jws-api-1.1.jar!/" />
     </CLASSES>

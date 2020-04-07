@@ -42,10 +42,11 @@ public class Base {
   @FXML
   Button buttonExceptions, buttonBaseQuit;
 
-  private static final String VERSION = "V 4.0";
+  private static final String VERSION = "V 7.0";
   private static String agileServerURL, agileUsername;
 
   static String sfdcOwnerId, agileCognizant, userFullName;
+
   static EnterpriseConnection connection;
   private static String password;
 
@@ -57,7 +58,7 @@ public class Base {
   static CollaborationPortType agileCollaborationStub;
   static SearchService agileSearchStub;
   static ObservableList<String> manNameChoices, productTeams, analysts, prodLineChoices, priceCatChoices,
-      prodFamilyChoices, bomClassChoices, codeTypes;
+      prodFamilyChoices, bomClassChoices, codeTypes, prodCatList;
 
 
   public void initialize() {
@@ -151,8 +152,8 @@ public class Base {
       prodLineChoices = FXCollections.observableArrayList("CASCADE",
           "CUSTOM ENGINEERING", "CCS", "SHASTA", "STORAGE");
       priceCatChoices = FXCollections.observableArrayList("CE-HW-CPG", "CE-HW-SCP",
-          "CE-HW-SPG", "CE-SW", "CE-INST", "SUPHW30", "SUPHW3P", "SUPHW3L", "SUPHW3M", "SUPHW3H", "" +
-              "SUPSW30", "SUPSW3P", "SUPSW3L", "SUPSW3M", "SUPSW3H", "CE-SVC-PS", "CE-SVC-TNG");
+          "CE-HW-SPG", "CE-SW", "CE-SVC-PS", "CE-SVC-TNG", "CEHPE", "CE-INST", "SUPHW30", "SUPHW3P", "SUPHW3L",
+              "SUPHW3M", "SUPHW3H", "SUPSW30", "SUPSW3P", "SUPSW3L", "SUPSW3M", "SUPSW3H");
       prodFamilyChoices = FXCollections.observableArrayList("CA", "CS", "DDN", "ES", "SHM", "SHR", "SNX", "STO", "XA");
       bomClassChoices = FXCollections.observableArrayList("ctBomBlade", "ctBomBladeOpt", "ctBomBoot",
           "ctBomCabAux", "ctBomCabOp", "ctBomCabs", "ctBomDoors", "ctBomFacility", "ctBomFreight", "ctBomFte",
@@ -165,7 +166,8 @@ public class Base {
           "ctBomSwOs", "ctBomSwPe", "ctBomSwWlm", "ctBomSys", "ctBomTapeLib", "ctBomTapeMedia", "ctBomTrng");
       analysts = FXCollections.observableArrayList("Erickson, Sue (sce)", "Wu, Bing (bing)");
       productTeams = FXCollections.observableArrayList("CPG", "SCP", "SPG");
-      codeTypes = FXCollections.observableArrayList("Product Led", "Sales Led");
+      codeTypes = FXCollections.observableArrayList("Product Led", "Sales Led", "Cross Sell", "HPE Material Tracking");
+      prodCatList = FXCollections.observableArrayList("HW","SW", "SVC", "TNG");
 
       return true;
     } catch (ConnectionException | IOException ce) {
@@ -264,7 +266,7 @@ public class Base {
     }
 
     public void ButtonBaseQuitOnAction () {
-      Platform.exit();
+        Platform.exit();
     }
 
     public void ButtonExceptionsOnAction () {

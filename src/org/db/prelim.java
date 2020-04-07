@@ -34,7 +34,7 @@ public class prelim {
     @FXML
     Button buttonCreateManPart, buttonQuit, buttonCreatePart, buttonCreateECO, buttonAddCustomCode,  buttonAddManPart;
     @FXML
-    Label label_Product_Category, label_List_Price, label_Reference_Cost, label_Price_Floor, label_Exception, label_AgileId;
+    Label label_List_Price, label_Reference_Cost, label_Price_Floor, label_Exception, label_AgileId;
     @FXML
     Label label_Prelim_Status_Message, label_ECO_notes;
     @FXML
@@ -46,11 +46,11 @@ public class prelim {
     @FXML
     public TextField textField_Cost, textField_Duration, textField_Customer, textField_ExchangeRate;
     @FXML
-    public TextField textField_Solution_Type, textField_LocalCost;
+    public TextField textField_Solution_Type, textField_LocalCost, textField_crossSell_ID;
     @FXML
     public ChoiceBox<String> choiceBox_Man_Name, choiceBox_Product_Line, choiceBox_Product_Family, choiceBox_BoM_Class;
     @FXML
-    public ChoiceBox<String> choiceBox_ChangeAnalyst, choiceBox_Price_Category, choiceBox_Product_Team;
+    public ChoiceBox<String> choiceBox_ChangeAnalyst, choiceBox_Price_Category, choiceBox_Product_Team, choiceBox_Product_Category;
     @FXML
     public ListView<String> listView_Codes;
     @FXML
@@ -59,11 +59,10 @@ public class prelim {
     private static String prodCat, duration, FXRate = "1.0";
     private static String new_USDcost = "0.0", new_LocalCost = "0.0", new_FXRate = "1.0";
     private Stage mainStage = getPrimaryStage();
-    private static String[] prodCatList = {"HW", "HW", "HW", "SW", "SVC", "SVC", "SVC", "SVC", "SVC",
-            "SVC", "SVC", "SVC", "SVC", "SVC", "SVC", "SVC", "TNG"};
-    static double[] margin = {0.225, 0.35, 0.4, 0.4, 0.35, 0., 0.15, 0.25, 0.35, 0.4, 0., 0.15, 0.25, 0.35, 0.4, 0.5, 0.35};
-    static double[] burden = {1.05, 1.05, 1.05, 1.018, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-    static double[] maint = {4., 4., 4, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+
+    static double[] margin = {0.35,  0.35, 0.55, 0.4,   0.5,  0.35, 0.02, 0.35, 0.0, 0.15, 0.25, 0.35, 0.4, 0.15, 0.25, 0.35, 0.4 };
+    static double[] burden = {1.05,  1.05, 1.05, 1.018, 1.,   1.,   1.,   1.,   1.,  1.,   1.,   1.,   1.,  1.,   1.,   1.,   1.  };
+    static double[] maint =  {4.,    4.,   4.,   0.,    0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.};
     private int priceCatIndex;
     private DecimalFormat df = new DecimalFormat("#.00");
 
@@ -81,6 +80,7 @@ public class prelim {
         choiceBox_ChangeAnalyst.setItems(analysts);
         choiceBox_Product_Team.setItems(productTeams);
         choiceBox_Code_Type.setItems(codeTypes);
+        choiceBox_Product_Category.setItems(prodCatList);
         choiceBox_Code_Type.setValue("Product Led");
 
         customCodeList = new ArrayList<>();
@@ -97,8 +97,6 @@ public class prelim {
         choiceBox_Price_Category.getSelectionModel().selectedIndexProperty().addListener(
                 (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
                     priceCatIndex = choiceBox_Price_Category.getSelectionModel().getSelectedIndex();
-                    prodCat = prodCatList[priceCatIndex];
-                    label_Product_Category.setText(prodCat);
                     calculate (new_USDcost, new_LocalCost, new_FXRate);
                 });
 
@@ -131,35 +129,44 @@ public class prelim {
         double costUSD = Double.parseDouble(usd);
         if ( ! local.equals("0.0")) {
             costUSD = Double.parseDouble(local) * Double.parseDouble(fx);
-            textField_Cost.setText(df.format(costUSD));
+
+            total_cost = Math.ceil(100.0 * costUSD * burden[priceCatIndex]) / 100.0;
+            ref_cost = roundup(total_cost);
+            floor_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]));
+
+            if (priceCatIndex < 6)
+                list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]) / 0.7d);
+            else
+                list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]));
+
+            maint_units = ref_cost * maint[priceCatIndex];
+
+            maint_coeff = 1.0;
+            if (priceCatIndex == 1)
+                maint_coeff = 1.21;
+            else if (priceCatIndex == 2)
+                maint_coeff = 2.29;
+
+            duration = textField_Duration.getText();
         }
+        else {
+            costUSD = 0.0;
+            total_cost = 0.0;
+            ref_cost = 0.0;
+            floor_price = 0.0;
+            list_price = 0.0;
+            maint_units = 0.0;
+
+        }
+
+        textField_Cost.setText(df.format(costUSD));
         label_ECO_notes.setText("Fx Rate : " + new_FXRate);
-        total_cost = Math.ceil(100.0 * costUSD * burden[priceCatIndex]) / 100.0;
         label_Total_Cost.setText(df.format(total_cost));
-
-        ref_cost = roundup(total_cost);
         label_Reference_Cost.setText(df.format(ref_cost));
-
-        floor_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]));
         label_Price_Floor.setText(df.format(floor_price));
         label_Reference_Price.setText(df.format(floor_price));
-
-        if (priceCatIndex < 3 || priceCatIndex == 4 || priceCatIndex > 14)
-            list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]) / 0.7d);
-        else
-            list_price = roundup(ref_cost / (1.0 - margin[priceCatIndex]));
         label_List_Price.setText(df.format(list_price));
-
-        maint_units = ref_cost * maint[priceCatIndex];
         label_Maintenance_Units.setText(df.format(maint_units));
-
-        maint_coeff = 1.0;
-        if (priceCatIndex == 1)
-            maint_coeff = 1.21;
-        else if (priceCatIndex == 2)
-            maint_coeff = 2.29;
-
-        duration = textField_Duration.getText();
 
     }
 
@@ -253,8 +260,8 @@ public class prelim {
             label_Prelim_Status_Message.setText("Manufacturing Part Update SUCCESS");
             label_Prelim_Status_Message.getStyleClass().remove(0);
             label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
-        } else {
-            label_Prelim_Status_Message.setText("Manufacturing Part  Update FAILURE - "
+        }  else {
+            label_Prelim_Status_Message.setText("Manufacturing Part Update FAILURE - "
                     + updateObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
             label_Prelim_Status_Message.getStyleClass().remove(0);
             label_Prelim_Status_Message.getStyleClass().add(0, "label-failure");
@@ -359,19 +366,19 @@ public class prelim {
         agileUpdateObjectRequest.setClassIdentifier("CustomCode");
         agileUpdateObjectRequest.setObjectNumber(customCode.objectNumber);
 
-        Element el_price_cat = createListElement("list31", choiceBox_Price_Category,
+        Element el_price_cat = createListElement("list71", choiceBox_Price_Category,
                 ItemConstants.ATT_PAGE_THREE_LIST01.toString());
 
-        Element el_prod_cat = createListElement("list32",  prodCat,
+        Element el_prod_cat = createListElement("list72",  choiceBox_Product_Category,
                 ItemConstants.ATT_PAGE_THREE_LIST02.toString());
 
-        Element el_prod_fam = createListElement("list33", choiceBox_Product_Family,
+        Element el_prod_fam = createListElement("list73", choiceBox_Product_Family,
                 ItemConstants.ATT_PAGE_THREE_LIST03.toString());
 
-        Element el_bom_class = createListElement("list34", choiceBox_BoM_Class,
+        Element el_bom_class = createListElement("list74", choiceBox_BoM_Class,
                 ItemConstants.ATT_PAGE_THREE_LIST04.toString());
 
-        Element el_code_type = createListElement("list43", choiceBox_Code_Type,
+        Element el_code_type = createListElement("list83", choiceBox_Code_Type,
             ItemConstants.ATT_PAGE_THREE_LIST13.toString());
 
 
@@ -389,11 +396,17 @@ public class prelim {
         if (updateObjectResponseType.getStatusCode().equals(ResponseStatusCode.SUCCESS)) {
             label_Prelim_Status_Message.setText("Custom Code Update SUCCESS");
             label_Prelim_Status_Message.getStyleClass().remove(0);
-            label_Prelim_Status_Message.getStyleClass().add(0,"label-success");
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-success");
             listView_Codes.getItems().add(textField_Part_Number.getText());
             agileItem newCode = new agileItem(textField_Part_Number.getText(), customCode.objectNumber);
             customCodeList.add(newCode);
             return true;
+        } else if (updateObjectResponseType.getStatusCode().equals(ResponseStatusCode.WARNING))  {
+            label_Prelim_Status_Message.setText("Custom Code Update WARNING " + customCode.itemText +
+                    updateObjectResponseType.getWarnings().get(0).getWarning().get(0).getMessage());
+            label_Prelim_Status_Message.getStyleClass().remove(0);
+            label_Prelim_Status_Message.getStyleClass().add(0, "label-warning");
+            return false;
         } else {
             label_Prelim_Status_Message.setText("Custom Code Update FAILURE - "
                     + updateObjectResponseType.getExceptions().get(0).getException().get(0).getMessage());
@@ -447,8 +460,6 @@ public class prelim {
         }
     }
 
-
-
     public void ButtonAddCustomCodeOnAction() {
         customCode.objectNumber = agileSearchCode("CustomCode", textField_Part_Number.getText(), label_Prelim_Status_Message);
         agileItem newCode = new agileItem(textField_Part_Number.getText(), customCode.objectNumber);
@@ -475,24 +486,56 @@ public class prelim {
                 "AGENCY COMPLIANCE IMPACT: NO IMPACT\n \n" +
                 "OTHER IMPACT:\n GOODS BURDEN: 1.8% \n" +
                 "LABOR BURDEN: 3.2% \n NON-GOODS BURDEN: 0%\n EXCHANGE RATE per USD: " + FXRate;
-        CreateObjectRequestType createObjectRequestType = new CreateObjectRequestType();
-        AgileCreateObjectRequest agileCreateObjectRequest = new AgileCreateObjectRequest();
-        agileCreateObjectRequest.setClassIdentifier("ECO");
-        AgileRowType row = new AgileRowType();
-
-        if(exceptionName == null) {
-            TextInputDialog labelDialog = new TextInputDialog();
-            labelDialog.setHeaderText("Enter Exception Number :" );
-            Optional<String> exceptionInput = labelDialog.showAndWait();
-            exceptionName = exceptionInput.toString();
-
-        }
 
         String ECODescription = choiceBox_Product_Team.getSelectionModel().getSelectedItem() +
                 ": CUSTOM CODE FOR " + textField_Customer.getText() +
                 " PRELIMINARY RELEASE OF CUSTOM CODE FOR " + textField_Solution_Type.getText() +
                 " SOLUTION. AGILE OPPY ID \n" + agileId + " SFDC EXCEPTION " +
                 exceptionName;
+
+        switch (choiceBox_Code_Type.getValue()) {
+            case "Cross Sell": {
+                ECOExtendedDescription = "EFFECTIVITY: UPON RELEASE\n\nMATERIAL DISPOSITION: NONE\n\n" +
+                    "FIELD IMPACT: NO IMPACT\n \n JIRA#: N/A\n \n" +
+                    "REASON FOR CHANGE: CUSTOM CODE REQUIRED FOR EXECUTION AND QUOTING IN BIGMACHINES\n \n" +
+                    "AGENCY COMPLIANCE IMPACT: NO IMPACT\n \n" +
+                    "OTHER IMPACT:\n GOODS BURDEN: 0% \n" +
+                    "LABOR BURDEN: 0% \n NON-GOODS BURDEN: 0%\n EXCHANGE RATE per USD: " + FXRate;
+
+                ECODescription = choiceBox_Product_Team.getSelectionModel().getSelectedItem() +
+                    "###: HPE CUSTOM CODE FOR " + textField_Customer.getText() +
+                    " PRELIMINARY RELEASE OF CUSTOM CODE FOR " + textField_Solution_Type.getText() +
+                    " SOLUTION. AGILE OPPY ID \n" + agileId + " SFDC EXCEPTION " +
+                    exceptionName + "CROSS SELL ID: " + textField_crossSell_ID.getText();
+                break;
+
+            }
+            case "HPE Material Tracking": {
+                ECOExtendedDescription = "EFFECTIVITY: UPON RELEASE\n\nMATERIAL DISPOSITION: NONE\n\n" +
+                    "FIELD IMPACT: NO IMPACT\n \n JIRA#: N/A\n \n" +
+                    "REASON FOR CHANGE: CUSTOM CODE REQUIRED FOR EXECUTION\n \n" +
+                    "AGENCY COMPLIANCE IMPACT: NO IMPACT\n \n";
+
+                ECODescription = "HPE CUSTOM CODE FOR " + textField_Customer.getText() +
+                        " FA RELEASE OF CUSTOM CODE FOR HPE SOLUTION THAT IS $0 COST/ $0 PRICE FOR MANUFACTURING TRACKING " +
+                        "AGILE OPPY ID \n" + agileId + " SFDC EXCEPTION " +
+                        exceptionName + " CROSS SELL ID: " + textField_crossSell_ID.getText();
+                break;
+            }
+        }
+
+        CreateObjectRequestType createObjectRequestType = new CreateObjectRequestType();
+        AgileCreateObjectRequest agileCreateObjectRequest = new AgileCreateObjectRequest();
+        agileCreateObjectRequest.setClassIdentifier("ECO");
+        AgileRowType row = new AgileRowType();
+
+        if(exceptionName == null) {
+            TextInputDialog prelimDialog = new TextInputDialog();
+            prelimDialog.setHeaderText("Enter Exception Number :" );
+            Optional<String> exceptionInput = prelimDialog.showAndWait();
+            exceptionName = exceptionInput.toString();
+        }
+
         if ((agileECO.itemText = getNextAutoNumber("ECO")) != null) {
 
             Element el_number = createTextElement("number", agileECO.itemText);
@@ -584,10 +627,15 @@ public class prelim {
 
             Element el_newRev = createTextElement("newRev", "A",
                     ChangeConstants.ATT_AFFECTED_ITEMS_NEW_REV.toString());
- //           Element el_lifeCycle = createListElement("lifecyclePhase", "Preliminary",
- //                  ChangeConstants.ATT_AFFECTED_ITEMS_LIFECYCLE_PHASE.toString());
+
             row.getAny().add(el_newRev);
-//            row.getAny().add(el_lifeCycle);
+
+            if(choiceBox_Code_Type.getValue().equals("HPE Material Tracking")) {
+
+                Element el_lifeCycle = createListElement("lifecyclePhase", "FA",
+                        ChangeConstants.ATT_AFFECTED_ITEMS_LIFECYCLE_PHASE.toString());
+                row.getAny().add(el_lifeCycle);
+            }
             updateRow.setRow(row);
 
             agileUpdateRowsRequest.getRow().add(updateRow);

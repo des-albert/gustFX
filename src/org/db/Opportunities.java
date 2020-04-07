@@ -47,7 +47,7 @@ public class Opportunities {
     static int rowSelect;
     private HashMap<String, String> exMap = new HashMap<>();
     private String opportunityId;
-    static String QuoteNumber, QuoteId;
+    static String quoteNumber, quoteId;
 
     private ObservableList<oppDisplay> data = FXCollections.observableArrayList();
 
@@ -79,8 +79,8 @@ public class Opportunities {
 
     private void SetUp() {
         final int OPPORTUNITY_LINK_COLUMN = 0;
-        final int OPPORTUNITY_PRIMARY_STATUS_COLUMN = 4;
-        final int OPPORTUNITY_EXCEPTION_COLUMN = 5;
+        final int OPPORTUNITY_PRIMARY_STATUS_COLUMN = 5;
+        final int OPPORTUNITY_EXCEPTION_COLUMN = 6;
 
         columnOpportunity.setCellFactory(e -> new TableCell<oppDisplay, String>() {
             @Override
@@ -263,7 +263,7 @@ public class Opportunities {
 
                             try {
                                 TextInputDialog labelDialog = new TextInputDialog();
-                                labelDialog.setHeaderText("Enter Asset Details :");
+                                labelDialog.setHeaderText("Paste Asset Map  :");
                                 Optional<String> assetDetail = labelDialog.showAndWait();
                                 if (assetDetail.isPresent()) {
                                     Task updateTask = new Task();
@@ -295,8 +295,8 @@ public class Opportunities {
 
                         case "Export Pending": {
                             label_Opportunity_Status.setText("Export Selected");
-                            QuoteNumber = opportunity[rowSelect].getQualified_Quote__c();
-                            QuoteId = opportunity[rowSelect].getId();
+                            quoteNumber = opportunity[rowSelect].getQualified_Quote__c();
+                            quoteId = opportunity[rowSelect].getId();
                             try {
                                 FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("export.fxml"));
                                 Parent exportForm = fxmlFormLoader.load();
@@ -312,7 +312,7 @@ public class Opportunities {
                         }
                         break;
                         case "Export Complete":
-                            QuoteNumber = opportunity[rowSelect].getQualified_Quote__c();
+                            quoteNumber = opportunity[rowSelect].getQualified_Quote__c();
                             try {
                                 Task updateTask = new Task();
                                 updateTask.setId(task[rowSelect].getId());
@@ -322,7 +322,7 @@ public class Opportunities {
                                             + ": Export Complete\n");
                                 else
                                     updateTask.setDescription(dtf.format(LocalDateTime.now()) + " " + userFullName
-                                            + ": Quote " + QuoteNumber + " Export Complete\n" + task[rowSelect].getDescription());
+                                            + ": Quote " + quoteNumber + " Export Complete\n" + task[rowSelect].getDescription());
                                 connection.update(new SObject[]{updateTask});
                                 label_Opportunity_Status.setText(opportunity[rowSelect].getName() + " Task Complete");
                                 label_Opportunity_Status.getStyleClass().remove(0);
@@ -406,12 +406,14 @@ public class Opportunities {
                         exceptionNumber = "";
                     }
 
+                    String execDate = (opportunity[i].getTransaction_Execute_by_Date__c() != null) ?
+                            df.format(opportunity[i].getTransaction_Execute_by_Date__c().getTime()) : "";
                     oppDisplay row = new oppDisplay(
                             i,
                             opportunity[i].getName(),
                             task[i].getStatus(),
                             df.format(opportunity[i].getShip_Date__c().getTime()),
-                            df.format(opportunity[i].getTransaction_Execute_by_Date__c().getTime()),
+                            execDate,
                             opportunity[i].getQualified_Quote__c(),
                             opportunity[i].getPrimary_Quote_Status__c(),
                             exceptionNumber);

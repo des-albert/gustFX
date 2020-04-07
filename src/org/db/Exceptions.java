@@ -10,6 +10,8 @@ import com.agile.ws.schema.table.v1.jaxws.RequestTableType;
 import com.sforce.soap.enterprise.QueryResult;
 import com.sforce.soap.enterprise.sobject.*;
 import com.sforce.ws.ConnectionException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -116,6 +118,7 @@ public class Exceptions {
         else {
           setText(item);
           switch (item) {
+            case "Revision Not Started":
             case "Prelim Not Started":
             case  "FA Not Started" :
               this.setStyle("-fx-text-fill: red;");
@@ -130,136 +133,129 @@ public class Exceptions {
       }
     });
 
-    /* Handle row selection */
+    /* Handle row selection with Cell Listener */
 
-    tableViewExceptions.getSelectionModel().setCellSelectionEnabled(true);
-    ObservableList<TablePosition> selectedCells = tableViewExceptions.getSelectionModel().getSelectedCells();
-
-    selectedCells.addListener((ListChangeListener<TablePosition>) change -> {
-      TablePosition tablePosition = selectedCells.get(0);
-      rowSelect = tablePosition.getRow();
-      int column = tablePosition.getColumn();
-      exceptionId = exception[rowSelect].getId();
-      exceptionName = exception[rowSelect].getException_Number__c();
-      agileId = exception[rowSelect].getAgile_Opportunity_ID__c();
+    tableViewExceptions.getFocusModel().focusedCellProperty().addListener( (observableValue, oldPos, pos) -> {
+      rowSelect = pos.getRow();
+      int column = pos.getColumn();
+      if(rowSelect >= 0) {
+        exceptionId = exception[rowSelect].getId();
+        exceptionName = exception[rowSelect].getException_Number__c();
+        agileId = exception[rowSelect].getAgile_Opportunity_ID__c();
 
 
-      switch(column) {
-        case EXCEPTION_LINK_COLUMN: {
-          String link = "https://cray.my.salesforce.com/" + exceptionId;
-          openWebpage(link);
-        }
-        break;
+        switch (column) {
+          case EXCEPTION_LINK_COLUMN: {
+            String link = "https://cray.my.salesforce.com/" + exceptionId;
+            openWebpage(link);
+          }
+          break;
 
-        case EXCEPTION_STATUS_COLUMN: {
-          if (mapTask.containsKey(exceptionId)) {
-            taskIndex = mapTask.get(exceptionId);
+          case EXCEPTION_STATUS_COLUMN: {
+            if (mapTask.containsKey(exceptionId)) {
+              taskIndex = mapTask.get(exceptionId);
 
-            taskId = task[taskIndex].getId();
-            taskStatus = task[taskIndex].getStatus();
-            taskSubject = task[taskIndex].getSubject();
-            if (task[taskIndex].getStatus().equals("Not Started") ) {
+              taskId = task[taskIndex].getId();
+              taskStatus = task[taskIndex].getStatus();
+              taskSubject = task[taskIndex].getSubject();
+              if (task[taskIndex].getStatus().equals("Not Started")) {
 
-              if(taskSubject.contains("Preliminary")) {
+                if (taskSubject.contains("Preliminary")) {
 
-                /* Create Preliminary Custom Code */
-                try {
-
-                  FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("prelim.fxml"));
-                  Parent prelimForm = fxmlFormLoader.load();
-                  Stage prelimStage = new Stage();
-                  prelimStage.setTitle("New Custom Code");
-                  prelimStage.setScene(new Scene(prelimForm));
-                  prelimStage.show();
-                  prelimStage.setOnHiding(e -> updatePreliminaryStatus());
-                } catch (IOException ex) {
-                  labelStatus_Message.setText("preliminary FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().remove(0);
-                  labelStatus_Message.getStyleClass().add(0,"label-failure");
-                }
-              }
-              else if (taskSubject.contains("FA")) {
-
-                /* Change Custom Code to First Article ( FA ) */
-
-                agileECO.itemText = exception[rowSelect].getAgile_ECO_MCO__c().substring(4);
-
-                try {
-                  FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("firstArticle.fxml"));
-                  Parent firstArticleForm = fxmlFormLoader.load();
-                  Stage faStage = new Stage();
-                  faStage.setTitle("Promote Custom Code to first Article ");
-                  faStage.setScene(new Scene(firstArticleForm, 600, 450));
-                  faStage.show();
-                  faStage.setOnHiding(e -> updateFirstArticleStatus());
-                }
-                catch (IOException ex) {
-                  labelStatus_Message.setText("first Article FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().remove(0);
-                  labelStatus_Message.getStyleClass().add(0, "label-failure");
-                }
-              }
-              else {
-
-                try {
-                  FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("revise.fxml"));
-                  Parent reviseForm = fxmlFormLoader.load();
-                  Stage reviseStage = new Stage();
-                  reviseStage.setTitle("Revise Quote ");
-                  reviseStage.setScene(new Scene(reviseForm, 925, 700));
-                  reviseStage.show();
-                  reviseStage.setOnHiding(e -> updateReviseStatus());
-                }
-                catch (IOException ex) {
-                  labelStatus_Message.setText("Revision FXML Loader Exception");
-                  labelStatus_Message.getStyleClass().remove(0);
-                  labelStatus_Message.getStyleClass().add(0, "label-failure");
-                }
-
-
-              }
-
-            }
-            else {
-              Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-              alert.setTitle("Task Complete Confirmation");
-              alert.setHeaderText("Exception Task");
-              alert.setContentText("Change Task to Completed ?");
-
-              Optional<ButtonType> result = alert.showAndWait();
-              if (result.isPresent() ) {
-                if (result.get() == ButtonType.OK) {
+                  /* Create Preliminary Custom Code */
                   try {
-                    Task updateTask = new Task();
-                    updateTask.setId(taskId);
-                    updateTask.setStatus("Completed");
-                    if (updateTask.getDescription() == null)
-                      updateTask.setDescription("Complete - " + dtf.format(LocalDateTime.now()));
-                    else
-                      updateTask.setDescription("Complete - " + dtf.format(LocalDateTime.now())
-                          + "\n" + updateTask.getDescription());
-                    connection.update(new SObject[]{updateTask});
-                    exDisplay row = exData.get(rowSelect);
-                    row.setExTask("Completed");
-                    tableViewExceptions.refresh();
 
-                  } catch (ConnectionException ex) {
-                    labelStatus_Message.setText("Task Status Updated");
+                    FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("prelim.fxml"));
+                    Parent prelimForm = fxmlFormLoader.load();
+                    Stage prelimStage = new Stage();
+                    prelimStage.setTitle("New Custom Code");
+                    prelimStage.setScene(new Scene(prelimForm));
+                    prelimStage.show();
+                    prelimStage.setOnHiding(e -> updatePreliminaryStatus());
+                  } catch (IOException ex) {
+                    labelStatus_Message.setText("preliminary FXML Loader Exception");
                     labelStatus_Message.getStyleClass().remove(0);
-                    labelStatus_Message.getStyleClass().add(0, "label-success");
+                    labelStatus_Message.getStyleClass().add(0, "label-failure");
+                  }
+                } else if (taskSubject.contains("FA")) {
+
+                  /* Change Custom Code to First Article ( FA ) */
+
+
+                  if( exception[rowSelect].getAgile_ECO_MCO__c() != null )
+                    agileECO.itemText = exception[rowSelect].getAgile_ECO_MCO__c().substring(4);
+                  else
+                    agileECO.itemText = "Not Found";
+
+                  try {
+                    FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("firstArticle.fxml"));
+                    Parent firstArticleForm = fxmlFormLoader.load();
+                    Stage faStage = new Stage();
+                    faStage.setTitle("Promote Custom Code to first Article ");
+                    faStage.setScene(new Scene(firstArticleForm, 600, 450));
+                    faStage.show();
+                    faStage.setOnHiding(e -> updateFirstArticleStatus());
+                  } catch (IOException ex) {
+                    labelStatus_Message.setText("first Article FXML Loader Exception");
+                    labelStatus_Message.getStyleClass().remove(0);
+                    labelStatus_Message.getStyleClass().add(0, "label-failure");
+                  }
+                } else {
+
+                  try {
+                    FXMLLoader fxmlFormLoader = new FXMLLoader(getClass().getResource("revise.fxml"));
+                    Parent reviseForm = fxmlFormLoader.load();
+                    Stage reviseStage = new Stage();
+                    reviseStage.setTitle("Revise Quote ");
+                    reviseStage.setScene(new Scene(reviseForm, 925, 700));
+                    reviseStage.show();
+                    reviseStage.setOnHiding(e -> updateReviseStatus());
+                  } catch (IOException ex) {
+                    labelStatus_Message.setText("Revision FXML Loader Exception");
+                    labelStatus_Message.getStyleClass().remove(0);
+                    labelStatus_Message.getStyleClass().add(0, "label-failure");
+                  }
+                }
+
+              } else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Task Complete Confirmation");
+                alert.setHeaderText("Exception Task");
+                alert.setContentText("Change Task to Completed ?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent()) {
+                  if (result.get() == ButtonType.OK) {
+                    try {
+                      Task updateTask = new Task();
+                      updateTask.setId(taskId);
+                      updateTask.setStatus("Completed");
+                      if (updateTask.getDescription() == null)
+                        updateTask.setDescription("Complete - " + dtf.format(LocalDateTime.now()));
+                      else
+                        updateTask.setDescription("Complete - " + dtf.format(LocalDateTime.now())
+                                + "\n" + updateTask.getDescription());
+                      connection.update(new SObject[]{updateTask});
+                      exDisplay row = exData.get(rowSelect);
+                      row.setExTask("Completed");
+                      tableViewExceptions.refresh();
+
+                    } catch (ConnectionException ex) {
+                      labelStatus_Message.setText("Task Status Updated");
+                      labelStatus_Message.getStyleClass().remove(0);
+                      labelStatus_Message.getStyleClass().add(0, "label-success");
+                    }
                   }
                 }
               }
+
             }
 
           }
-
+          break;
         }
-        break;
       }
     });
-
-
   }
 
   private void updatePreliminaryStatus() {
@@ -281,7 +277,7 @@ public class Exceptions {
         }
         Exception__c updateException = new Exception__c();
         updateException.setId(exceptionId);
-        updateException.setAgile_ECO_MCO__c(agileECO.itemText);
+        updateException.setAgile_ECO_MCO__c("ECO "+ agileECO.itemText);
         updateException.setQuoting_Instructions__c(quoteParts.toString());
         connection.update(new SObject[]{updateException});
 
@@ -331,14 +327,14 @@ public class Exceptions {
         Task updateTask = new Task();
         updateTask.setId(taskId);
         updateTask.setStatus("In Progress");
-        updateTask.setDescription("ECO " + agileMCO.itemText + " created - " +
+        updateTask.setDescription("ECO " + agileECO.itemText + " created - " +
                 dtf.format(LocalDateTime.now()) + "\n");
-        updateTask.setException_Agile_ECO_MCO__c("ECO " + agileMCO.itemText);
+        updateTask.setException_Agile_ECO_MCO__c("ECO " + agileECO.itemText);
         connection.update(new SObject[]{updateTask});
 
         exDisplay row = exData.get(rowSelect);
         row.setExTask("In Progress");
-        row.setExECO_MCO("ECO " + agileMCO.itemText + " " +
+        row.setExECO_MCO("ECO " + agileECO.itemText + " " +
                 getKeyStatus(getChangeStatus(agileECO.itemText, "ECO")));
         tableViewExceptions.refresh();
 

@@ -14,9 +14,11 @@ module org.db {
     requires ST4;
     requires appengine.api;
     requires poi;
+    requires poi.ooxml;
     requires transitive java.logging;
 
     requires AgileAPI;
+
     opens com.agile.ws.schema.project.v1.jaxws;
     opens com.agile.ws.schema.search.v1.jaxws;
     opens com.agile.ws.schema.collaboration.v1.jaxws;

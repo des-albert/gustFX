@@ -342,32 +342,32 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
     }
 
     /**
-     * element : BigMachines__Sales_Price__c of type {http://www.w3.org/2001/XMLSchema}double
-     * java type: double
+     * element : BigMachines__Total_Price__c of type {http://www.w3.org/2001/XMLSchema}double
+     * java type: java.lang.Double
      */
-    private boolean BigMachines__Sales_Price__c__is_set = false;
+    private boolean BigMachines__Total_Price__c__is_set = false;
 
-    private double BigMachines__Sales_Price__c;
+    private java.lang.Double BigMachines__Total_Price__c;
 
-    public double getBigMachines__Sales_Price__c() {
-      return BigMachines__Sales_Price__c;
+    public java.lang.Double getBigMachines__Total_Price__c() {
+      return BigMachines__Total_Price__c;
     }
 
-    public void setBigMachines__Sales_Price__c(double BigMachines__Sales_Price__c) {
-      this.BigMachines__Sales_Price__c = BigMachines__Sales_Price__c;
-      BigMachines__Sales_Price__c__is_set = true;
+    public void setBigMachines__Total_Price__c(java.lang.Double BigMachines__Total_Price__c) {
+      this.BigMachines__Total_Price__c = BigMachines__Total_Price__c;
+      BigMachines__Total_Price__c__is_set = true;
     }
 
-    protected void setBigMachines__Sales_Price__c(com.sforce.ws.parser.XmlInputStream __in,
+    protected void setBigMachines__Total_Price__c(com.sforce.ws.parser.XmlInputStream __in,
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
-      if (__typeMapper.isElement(__in, _lookupTypeInfo("BigMachines__Sales_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Sales_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
-        setBigMachines__Sales_Price__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("BigMachines__Sales_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Sales_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("BigMachines__Total_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Total_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
+        setBigMachines__Total_Price__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("BigMachines__Total_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Total_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
       }
     }
 
-    private void writeFieldBigMachines__Sales_Price__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
-      __typeMapper.writeObject(__out, _lookupTypeInfo("BigMachines__Sales_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Sales_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), BigMachines__Sales_Price__c, BigMachines__Sales_Price__c__is_set);
+    private void writeFieldBigMachines__Total_Price__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("BigMachines__Total_Price__c", "urn:sobject.enterprise.soap.sforce.com","BigMachines__Total_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), BigMachines__Total_Price__c, BigMachines__Total_Price__c__is_set);
     }
 
     /**
@@ -400,18 +400,105 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
     }
 
     /**
+     * element : Contingency_Cost__c of type {http://www.w3.org/2001/XMLSchema}double
+     * java type: java.lang.Double
+     */
+    private boolean Contingency_Cost__c__is_set = false;
+
+    private java.lang.Double Contingency_Cost__c;
+
+    public java.lang.Double getContingency_Cost__c() {
+      return Contingency_Cost__c;
+    }
+
+    public void setContingency_Cost__c(java.lang.Double Contingency_Cost__c) {
+      this.Contingency_Cost__c = Contingency_Cost__c;
+      Contingency_Cost__c__is_set = true;
+    }
+
+    protected void setContingency_Cost__c(com.sforce.ws.parser.XmlInputStream __in,
+        com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
+      __in.peekTag();
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Contingency_Cost__c", "urn:sobject.enterprise.soap.sforce.com","Contingency_Cost__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
+        setContingency_Cost__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Contingency_Cost__c", "urn:sobject.enterprise.soap.sforce.com","Contingency_Cost__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
+      }
+    }
+
+    private void writeFieldContingency_Cost__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Contingency_Cost__c", "urn:sobject.enterprise.soap.sforce.com","Contingency_Cost__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), Contingency_Cost__c, Contingency_Cost__c__is_set);
+    }
+
+    /**
+     * element : Extd_Price_USD__c of type {http://www.w3.org/2001/XMLSchema}double
+     * java type: java.lang.Double
+     */
+    private boolean Extd_Price_USD__c__is_set = false;
+
+    private java.lang.Double Extd_Price_USD__c;
+
+    public java.lang.Double getExtd_Price_USD__c() {
+      return Extd_Price_USD__c;
+    }
+
+    public void setExtd_Price_USD__c(java.lang.Double Extd_Price_USD__c) {
+      this.Extd_Price_USD__c = Extd_Price_USD__c;
+      Extd_Price_USD__c__is_set = true;
+    }
+
+    protected void setExtd_Price_USD__c(com.sforce.ws.parser.XmlInputStream __in,
+        com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
+      __in.peekTag();
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Extd_Price_USD__c", "urn:sobject.enterprise.soap.sforce.com","Extd_Price_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
+        setExtd_Price_USD__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Extd_Price_USD__c", "urn:sobject.enterprise.soap.sforce.com","Extd_Price_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
+      }
+    }
+
+    private void writeFieldExtd_Price_USD__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Extd_Price_USD__c", "urn:sobject.enterprise.soap.sforce.com","Extd_Price_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), Extd_Price_USD__c, Extd_Price_USD__c__is_set);
+    }
+
+    /**
+     * element : Ext_Cost_USD__c of type {http://www.w3.org/2001/XMLSchema}double
+     * java type: java.lang.Double
+     */
+    private boolean Ext_Cost_USD__c__is_set = false;
+
+    private java.lang.Double Ext_Cost_USD__c;
+
+    public java.lang.Double getExt_Cost_USD__c() {
+      return Ext_Cost_USD__c;
+    }
+
+    public void setExt_Cost_USD__c(java.lang.Double Ext_Cost_USD__c) {
+      this.Ext_Cost_USD__c = Ext_Cost_USD__c;
+      Ext_Cost_USD__c__is_set = true;
+    }
+
+    protected void setExt_Cost_USD__c(com.sforce.ws.parser.XmlInputStream __in,
+        com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
+      __in.peekTag();
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Ext_Cost_USD__c", "urn:sobject.enterprise.soap.sforce.com","Ext_Cost_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
+        setExt_Cost_USD__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Ext_Cost_USD__c", "urn:sobject.enterprise.soap.sforce.com","Ext_Cost_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
+      }
+    }
+
+    private void writeFieldExt_Cost_USD__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Ext_Cost_USD__c", "urn:sobject.enterprise.soap.sforce.com","Ext_Cost_USD__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), Ext_Cost_USD__c, Ext_Cost_USD__c__is_set);
+    }
+
+    /**
      * element : Group_Qty__c of type {http://www.w3.org/2001/XMLSchema}double
-     * java type: double
+     * java type: java.lang.Double
      */
     private boolean Group_Qty__c__is_set = false;
 
-    private double Group_Qty__c;
+    private java.lang.Double Group_Qty__c;
 
-    public double getGroup_Qty__c() {
+    public java.lang.Double getGroup_Qty__c() {
       return Group_Qty__c;
     }
 
-    public void setGroup_Qty__c(double Group_Qty__c) {
+    public void setGroup_Qty__c(java.lang.Double Group_Qty__c) {
       this.Group_Qty__c = Group_Qty__c;
       Group_Qty__c__is_set = true;
     }
@@ -420,7 +507,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
       if (__typeMapper.isElement(__in, _lookupTypeInfo("Group_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Group_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
-        setGroup_Qty__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("Group_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Group_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+        setGroup_Qty__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Group_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Group_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
       }
     }
 
@@ -661,6 +748,35 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
     }
 
     /**
+     * element : Price_Coefficient__c of type {http://www.w3.org/2001/XMLSchema}double
+     * java type: double
+     */
+    private boolean Price_Coefficient__c__is_set = false;
+
+    private double Price_Coefficient__c;
+
+    public double getPrice_Coefficient__c() {
+      return Price_Coefficient__c;
+    }
+
+    public void setPrice_Coefficient__c(double Price_Coefficient__c) {
+      this.Price_Coefficient__c = Price_Coefficient__c;
+      Price_Coefficient__c__is_set = true;
+    }
+
+    protected void setPrice_Coefficient__c(com.sforce.ws.parser.XmlInputStream __in,
+        com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
+      __in.peekTag();
+      if (__typeMapper.isElement(__in, _lookupTypeInfo("Price_Coefficient__c", "urn:sobject.enterprise.soap.sforce.com","Price_Coefficient__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
+        setPrice_Coefficient__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("Price_Coefficient__c", "urn:sobject.enterprise.soap.sforce.com","Price_Coefficient__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+      }
+    }
+
+    private void writeFieldPrice_Coefficient__c(com.sforce.ws.parser.XmlOutputStream __out, com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException {
+      __typeMapper.writeObject(__out, _lookupTypeInfo("Price_Coefficient__c", "urn:sobject.enterprise.soap.sforce.com","Price_Coefficient__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), Price_Coefficient__c, Price_Coefficient__c__is_set);
+    }
+
+    /**
      * element : Product_Category__c of type {http://www.w3.org/2001/XMLSchema}string
      * java type: java.lang.String
      */
@@ -749,17 +865,17 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
 
     /**
      * element : Services_Price__c of type {http://www.w3.org/2001/XMLSchema}double
-     * java type: double
+     * java type: java.lang.Double
      */
     private boolean Services_Price__c__is_set = false;
 
-    private double Services_Price__c;
+    private java.lang.Double Services_Price__c;
 
-    public double getServices_Price__c() {
+    public java.lang.Double getServices_Price__c() {
       return Services_Price__c;
     }
 
-    public void setServices_Price__c(double Services_Price__c) {
+    public void setServices_Price__c(java.lang.Double Services_Price__c) {
       this.Services_Price__c = Services_Price__c;
       Services_Price__c__is_set = true;
     }
@@ -768,7 +884,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
       if (__typeMapper.isElement(__in, _lookupTypeInfo("Services_Price__c", "urn:sobject.enterprise.soap.sforce.com","Services_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
-        setServices_Price__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("Services_Price__c", "urn:sobject.enterprise.soap.sforce.com","Services_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+        setServices_Price__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Services_Price__c", "urn:sobject.enterprise.soap.sforce.com","Services_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
       }
     }
 
@@ -778,17 +894,17 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
 
     /**
      * element : Support_Price__c of type {http://www.w3.org/2001/XMLSchema}double
-     * java type: double
+     * java type: java.lang.Double
      */
     private boolean Support_Price__c__is_set = false;
 
-    private double Support_Price__c;
+    private java.lang.Double Support_Price__c;
 
-    public double getSupport_Price__c() {
+    public java.lang.Double getSupport_Price__c() {
       return Support_Price__c;
     }
 
-    public void setSupport_Price__c(double Support_Price__c) {
+    public void setSupport_Price__c(java.lang.Double Support_Price__c) {
       this.Support_Price__c = Support_Price__c;
       Support_Price__c__is_set = true;
     }
@@ -797,7 +913,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
       if (__typeMapper.isElement(__in, _lookupTypeInfo("Support_Price__c", "urn:sobject.enterprise.soap.sforce.com","Support_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
-        setSupport_Price__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("Support_Price__c", "urn:sobject.enterprise.soap.sforce.com","Support_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+        setSupport_Price__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Support_Price__c", "urn:sobject.enterprise.soap.sforce.com","Support_Price__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
       }
     }
 
@@ -836,17 +952,17 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
 
     /**
      * element : Unit_Qty__c of type {http://www.w3.org/2001/XMLSchema}double
-     * java type: double
+     * java type: java.lang.Double
      */
     private boolean Unit_Qty__c__is_set = false;
 
-    private double Unit_Qty__c;
+    private java.lang.Double Unit_Qty__c;
 
-    public double getUnit_Qty__c() {
+    public java.lang.Double getUnit_Qty__c() {
       return Unit_Qty__c;
     }
 
-    public void setUnit_Qty__c(double Unit_Qty__c) {
+    public void setUnit_Qty__c(java.lang.Double Unit_Qty__c) {
       this.Unit_Qty__c = Unit_Qty__c;
       Unit_Qty__c__is_set = true;
     }
@@ -855,7 +971,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
         com.sforce.ws.bind.TypeMapper __typeMapper) throws java.io.IOException, com.sforce.ws.ConnectionException {
       __in.peekTag();
       if (__typeMapper.isElement(__in, _lookupTypeInfo("Unit_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Unit_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true))) {
-        setUnit_Qty__c((double)__typeMapper.readDouble(__in, _lookupTypeInfo("Unit_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Unit_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), double.class));
+        setUnit_Qty__c((java.lang.Double)__typeMapper.readObject(__in, _lookupTypeInfo("Unit_Qty__c", "urn:sobject.enterprise.soap.sforce.com","Unit_Qty__c","http://www.w3.org/2001/XMLSchema","double",0,1,true), java.lang.Double.class));
       }
     }
 
@@ -924,8 +1040,11 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       writeFieldBigMachines__Product__c(__out, __typeMapper);
       writeFieldBigMachines__Quantity__c(__out, __typeMapper);
       writeFieldBigMachines__Quote__c(__out, __typeMapper);
-      writeFieldBigMachines__Sales_Price__c(__out, __typeMapper);
+      writeFieldBigMachines__Total_Price__c(__out, __typeMapper);
       writeFieldBOM_Class__c(__out, __typeMapper);
+      writeFieldContingency_Cost__c(__out, __typeMapper);
+      writeFieldExtd_Price_USD__c(__out, __typeMapper);
+      writeFieldExt_Cost_USD__c(__out, __typeMapper);
       writeFieldGroup_Qty__c(__out, __typeMapper);
       writeFieldGroup__c(__out, __typeMapper);
       writeFieldItem_Lifecycle__c(__out, __typeMapper);
@@ -935,6 +1054,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       writeFieldName(__out, __typeMapper);
       writeFieldParent_Doc__c(__out, __typeMapper);
       writeFieldPrice_Category__c(__out, __typeMapper);
+      writeFieldPrice_Coefficient__c(__out, __typeMapper);
       writeFieldProduct_Category__c(__out, __typeMapper);
       writeFieldProduct_Family__c(__out, __typeMapper);
       writeFieldQuote_Number__c(__out, __typeMapper);
@@ -957,8 +1077,11 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       setBigMachines__Product__c(__in, __typeMapper);
       setBigMachines__Quantity__c(__in, __typeMapper);
       setBigMachines__Quote__c(__in, __typeMapper);
-      setBigMachines__Sales_Price__c(__in, __typeMapper);
+      setBigMachines__Total_Price__c(__in, __typeMapper);
       setBOM_Class__c(__in, __typeMapper);
+      setContingency_Cost__c(__in, __typeMapper);
+      setExtd_Price_USD__c(__in, __typeMapper);
+      setExt_Cost_USD__c(__in, __typeMapper);
       setGroup_Qty__c(__in, __typeMapper);
       setGroup__c(__in, __typeMapper);
       setItem_Lifecycle__c(__in, __typeMapper);
@@ -968,6 +1091,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       setName(__in, __typeMapper);
       setParent_Doc__c(__in, __typeMapper);
       setPrice_Category__c(__in, __typeMapper);
+      setPrice_Coefficient__c(__in, __typeMapper);
       setProduct_Category__c(__in, __typeMapper);
       setProduct_Family__c(__in, __typeMapper);
       setQuote_Number__c(__in, __typeMapper);
@@ -989,8 +1113,11 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       toStringHelper(sb, "BigMachines__Product__c", BigMachines__Product__c);
       toStringHelper(sb, "BigMachines__Quantity__c", BigMachines__Quantity__c);
       toStringHelper(sb, "BigMachines__Quote__c", BigMachines__Quote__c);
-      toStringHelper(sb, "BigMachines__Sales_Price__c", BigMachines__Sales_Price__c);
+      toStringHelper(sb, "BigMachines__Total_Price__c", BigMachines__Total_Price__c);
       toStringHelper(sb, "BOM_Class__c", BOM_Class__c);
+      toStringHelper(sb, "Contingency_Cost__c", Contingency_Cost__c);
+      toStringHelper(sb, "Extd_Price_USD__c", Extd_Price_USD__c);
+      toStringHelper(sb, "Ext_Cost_USD__c", Ext_Cost_USD__c);
       toStringHelper(sb, "Group_Qty__c", Group_Qty__c);
       toStringHelper(sb, "Group__c", Group__c);
       toStringHelper(sb, "Item_Lifecycle__c", Item_Lifecycle__c);
@@ -1000,6 +1127,7 @@ public class BigMachines__Quote_Product__c extends com.sforce.soap.enterprise.so
       toStringHelper(sb, "Name", Name);
       toStringHelper(sb, "Parent_Doc__c", Parent_Doc__c);
       toStringHelper(sb, "Price_Category__c", Price_Category__c);
+      toStringHelper(sb, "Price_Coefficient__c", Price_Coefficient__c);
       toStringHelper(sb, "Product_Category__c", Product_Category__c);
       toStringHelper(sb, "Product_Family__c", Product_Family__c);
       toStringHelper(sb, "Quote_Number__c", Quote_Number__c);

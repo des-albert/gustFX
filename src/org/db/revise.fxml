@@ -4,12 +4,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="925.0" stylesheets="@../../css/gust.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.db.revise">
+<AnchorPane prefHeight="700.0" prefWidth="925.0" stylesheets="@../../css/gust.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.db.revise">
    <children>
       <TextField fx:id="textField_Man_Part_Number" layoutX="172.0" layoutY="371.0" prefHeight="26.0" prefWidth="278.0" promptText="Part Number" styleClass="text-fill" stylesheets="@../../css/gust.css" />
       <TextField fx:id="textField_Man_Part_Desc" layoutX="20.0" layoutY="458.0" prefHeight="26.0" prefWidth="430.0" promptText="Manufacturer Part Description" styleClass="text-fill" stylesheets="@../../css/gust.css" />
       <TextField fx:id="textField_Cost" layoutX="284.0" layoutY="284.0" prefHeight="26.0" prefWidth="125.0" promptText="Quote Cost" styleClass="text-fill" stylesheets="@../../css/gust.css" />
-      <TextField fx:id="textField_Part_Number" layoutX="20.0" layoutY="218.0" prefHeight="26.0" prefWidth="272.0" promptText="Number" styleClass="text-fill" stylesheets="@../../css/gust.css" />
+      <TextField fx:id="textField_Part_Number" layoutX="20.0" layoutY="218.0" prefHeight="26.0" prefWidth="272.0" promptText="Custom Code" styleClass="text-fill" stylesheets="@../../css/gust.css" />
       <TextField fx:id="textField_Customer" layoutX="180.0" layoutY="71.0" prefHeight="26.0" prefWidth="159.0" promptText="Customer Name" styleClass="text-fill" stylesheets="@../../css/gust.css" />
       <TextField fx:id="textField_Solution_Type" layoutX="20.0" layoutY="71.0" prefHeight="26.0" prefWidth="142.0" promptText="Solution Type" styleClass="text-fill" stylesheets="@../../css/gust.css" />
       <TextField fx:id="textField_LocalCost" layoutX="20.0" layoutY="287.0" prefHeight="26.0" prefWidth="116.0" promptText="Quote Cost" styleClass="text-fill" stylesheets="@../../css/gust.css" />

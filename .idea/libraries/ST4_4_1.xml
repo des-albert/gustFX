@@ -1,9 +1,7 @@
 <component name="libraryTable">
-  <library name="org.antlr:ST4:4.1" type="repository">
-    <properties maven-id="org.antlr:ST4:4.1" />
+  <library name="ST4-4.1">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/ST4-4.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/antlr-runtime-3.5.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
